@@ -1,0 +1,28 @@
+# Project-specific Docker Compose file
+# This file is included by the main docker-compose.yml
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: project-app  # Change to unique name
+    restart: unless-stopped
+    volumes:
+      - app-data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=production
+    env_file:
+      - .env
+    networks:
+      - shared-network
+
+volumes:
+  app-data:
+    name: project-app-data  # Change to unique name
+
+networks:
+  shared-network:
+    external: true  # MUST be external: true
+
