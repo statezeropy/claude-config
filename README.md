@@ -6,30 +6,65 @@ Claude Code / Gemini CLI / Codex CLI global settings and skills.
 
 ### Claude Code
 
+**macOS / Linux**
+
 ```bash
 cd ~/.claude
-git clone git@github.com:statezeropy/claude-config.git
+git clone https://github.com/statezeropy/claude-config.git
 ln -sf claude-config/CLAUDE.md CLAUDE.md
 ln -sf claude-config/skills skills
 ```
 
+**Windows (CMD)**
+
+```cmd
+cd %USERPROFILE%\.claude
+git clone https://github.com/statezeropy/claude-config.git
+mklink CLAUDE.md claude-config\CLAUDE.md
+mklink /D skills claude-config\skills
+```
+
 ### Gemini CLI
+
+**macOS / Linux**
 
 ```bash
 cd ~/.gemini
-git clone git@github.com:statezeropy/claude-config.git
+git clone https://github.com/statezeropy/claude-config.git
 ln -sf claude-config/CLAUDE.md GEMINI.md
 ln -sf claude-config/skills skills
 ```
 
+**Windows (CMD)**
+
+```cmd
+cd %USERPROFILE%\.gemini
+git clone https://github.com/statezeropy/claude-config.git
+mklink GEMINI.md claude-config\CLAUDE.md
+mklink /D skills claude-config\skills
+```
+
 ### Codex CLI
+
+**macOS / Linux**
 
 ```bash
 cd ~/.codex
-git clone git@github.com:statezeropy/claude-config.git
+git clone https://github.com/statezeropy/claude-config.git
 ln -sf claude-config/CLAUDE.md CODEX.md
 ln -sf claude-config/skills skills
 ```
+
+**Windows (CMD)**
+
+```cmd
+cd %USERPROFILE%\.codex
+git clone https://github.com/statezeropy/claude-config.git
+mklink CODEX.md claude-config\CLAUDE.md
+mklink /D skills claude-config\skills
+```
+
+> **Note**: Windows에서 `mklink`은 관리자 권한 또는 [개발자 모드](https://learn.microsoft.com/ko-kr/windows/apps/get-started/enable-your-device-for-development) 활성화가 필요합니다.
 
 ## Plugins (Claude only)
 
