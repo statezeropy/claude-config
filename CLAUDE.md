@@ -40,10 +40,6 @@
 
 - 설계 문서가 곧 구현의 근거다. 코드부터 짜지 않는다.
 - 단계를 나누고, 품질 게이트를 거치며, 점진적으로 전달한다.
-- 기능 개발 완료 후 반드시 docs/를 코드와 동기화한다:
-  - `docs/*.md`: 구현된 내용을 설계서에 반영 (변경된 구조, API, 패턴 등)
-  - `docs/todo/*.md`: 적용된 항목은 파일에서 삭제한다. 모든 항목이 적용되었으면 파일 자체를 삭제한다.
-  - 코드 변경과 문서 업데이트를 하나의 작업 단위로 취급한다.
 
 ## 개발 표준 스택
 
@@ -63,6 +59,45 @@
 - 항상 feature branch에서 작업한다.
 - Conventional Commits를 따른다. (feat:, fix:, docs:, refactor:, test:, chore:)
 - 1인 개발이라도 PR 프로세스를 유지한다.
+
+## 릴리즈 노트 (CHANGELOG.md = source of truth)
+
+릴리즈 노트는 자동 생성 PR 목록을 그대로 두지 않고 **큐레이션**한다. 커밋/PR 제목을 복붙하지 말고 **변경의 영향(impact)으로 재서술**한다 — 독자(팀원·운영자·API 소비자)가 "나에게 무슨 의미인지"를 알게.
+
+**저장소 루트의 `CHANGELOG.md` 가 노트의 source of truth** 다 ([Keep a Changelog](https://keepachangelog.com) 파일 구조: `[Unreleased]` 누적 + 버전별 dated 섹션 + 하단 compare 링크). GitHub Release 본문은 이 파일의 해당 버전 섹션에서 파생한다(가능하면 CI 가 추출, 아니면 수동 복사). 둘을 따로 쓰지 말고 **CHANGELOG.md 한 곳만** 관리해 drift 를 막는다.
+
+**평상시**: 변경을 머지할 때마다 `## [Unreleased]` 아래에 항목을 누적.
+**릴리즈 시**: `[Unreleased]` → `## [X.Y.Z] - YYYY-MM-DD` 로 이동 + 하단 compare 링크 추가 + version bump.
+
+**버전 섹션 구조** (해당 항목 있을 때만 출력):
+
+```markdown
+## v<X.Y.Z> — <한 줄 테마> (<YYYY-MM-DD>)
+
+### ⚠️ Breaking / 마이그레이션      ← 있으면 최상단
+- <변경> — **영향**: <누가 뭘 해야> · **조치**: <명령/config>
+
+### ✨ Features          (feat)
+- **<scope>**: <영향 한 줄>. <왜/맥락> (#PR)
+### 🐛 Fixes             (fix)
+- **<scope>**: <증상 → 원인 → 해결> (#PR)
+### ♻️ Refactor / ⚡ Performance   (refactor, perf)
+### 🔧 Infra / Ops / CI  (chore, ci, build — 배포·인프라·deps)
+### 📝 Docs              (docs)
+
+---
+**배포 노트**: 마이그레이션 실행 여부 · 새 env · 인프라(nginx/모니터링 등) 변경
+**Full Changelog**: <compare 링크>
+```
+
+**작성 절차** (결정적으로 소스를 훑어 채운다):
+- `git log v<PREV>..HEAD` 의 Conventional prefix(feat/fix/…) → 카테고리 분류
+- 머지된 PR 제목·본문 → 영향 문장 + `#번호`(추적성 유지)
+- migration 디렉토리 변경 → ⚠️ 마이그레이션 + 배포 노트
+- deps·docker-compose·nginx·env 변경 → 🔧 Infra/Ops + 배포 노트
+- `BREAKING CHANGE:` 또는 `type!:` 표식 → ⚠️ 최상단 격리
+
+**원칙**: 영향 중심(제목 복붙 금지) · Conventional type 별 그룹핑 · Breaking·마이그레이션·Ops 는 최상단 별도 · 자동 생성 원본 목록은 맨 아래 `<details>` 로 접어 보존.
 
 ## 코드 품질
 
