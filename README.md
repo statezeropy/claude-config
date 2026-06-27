@@ -40,3 +40,11 @@ Claude Code 터미널에 상태바(statusline)를 표시. 현재 모델, 토큰 
 /plugin install claude-hud
 /claude-hud:setup
 ```
+
+### Humanize Korean
+AI(ChatGPT·Claude·Gemini 등)가 쓴 한글 텍스트를 사람이 쓴 글처럼 윤문. 번역투·피동태·기계적 병렬 등 AI 티 패턴을 탐지해 내용은 유지한 채 문체만 자연스럽게 교정.
+
+```
+/plugin marketplace add epoko77-ai/im-not-ai
+/plugin install humanize-korean@im-not-ai
+```
