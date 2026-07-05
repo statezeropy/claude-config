@@ -49,6 +49,15 @@ AI(ChatGPT·Claude·Gemini 등)가 쓴 한글 텍스트를 사람이 쓴 글처�
 /plugin install humanize-korean@im-not-ai
 ```
 
+### Korean Skills (humanizer)
+한국어 글쓰기 도구 모음 — humanizer(AI 티 제거), grammar-checker(맞춤법·문법 검사), style-guide(문체 일관성). daleseo/korean-skills 마켓플레이스에서 설치.
+
+```
+npx skills add daleseo/korean-skills
+claude /plugin marketplace add daleseo/korean-skills
+claude /plugin install korean-skills@korean-skills
+```
+
 ### drawio
 다이어그램·플로우차트·아키텍처도·ER·UML(시퀀스/클래스)·네트워크 토폴로지·ML 모델 도식 등을 `.drawio` XML로 생성하고 draw.io desktop CLI로 PNG/SVG/PDF/JPG 내보내기. 커스텀 스타일링·스윔레인 등 리치한 표현에 적합.
 
