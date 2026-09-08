@@ -1,6 +1,6 @@
 ---
 name: feature-planner
-description: Creates phase-based feature plans with quality gates and incremental delivery structure. Use when planning features, organizing work, breaking down tasks, creating roadmaps, or structuring development strategy. Keywords: plan, planning, phases, breakdown, strategy, roadmap, organize, structure, outline.
+description: Creates phase-based feature plans with quality gates and incremental delivery structure. Use when planning HOW to deliver work already decided on — breaking features into phases, sequencing tasks, creating roadmaps. Keywords: plan, planning, phases, breakdown, strategy, roadmap, organize, structure, outline. For deciding WHAT to build and WHY (technical design doc, RFC, architecture proposal, alternatives analysis), use design-doc instead.
 ---
 
 # Feature Planner
@@ -12,6 +12,17 @@ Generate structured, phase-based plans where:
 - User approves plan before any work begins
 - Progress tracked via markdown checkboxes
 - Each phase is 1-4 hours maximum
+
+## Relationship to design-doc
+
+This skill covers **how and when** — phases, tests, quality gates. It assumes the **what and why**
+is already settled.
+
+If the underlying design decision has not been made or reviewed (no chosen approach, alternatives
+not weighed, scope boundaries unclear), stop and use the `design-doc` skill first. Planning phases
+on top of an undecided design produces a plan that gets thrown away.
+
+Typical sequence: `design-doc` (Approved) -> `feature-planner` -> implementation.
 
 ## Planning Workflow
 

@@ -1,0 +1,17 @@
+# Skills managed by the external `.agents` toolchain (npx skills add).
+# These live as junctions/symlinks into ~/.agents/skills and must not be committed.
+asta-skill/
+bangumi-frames/
+creating-mermaid-diagrams/
+drawio-skill/
+excalidraw/
+journal-abbrev/
+paper-fetch/
+pi-cli-runtime/
+pi-prompting/
+pi-result-handling/
+plantuml-skill/
+semanticscholar-skill/
+target-prioritization/
+tldraw-skill/
+video-podcast-maker/
