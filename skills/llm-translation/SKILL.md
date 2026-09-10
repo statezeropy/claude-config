@@ -6,8 +6,6 @@ allowed-tools: Read, Grep, Glob, Bash, Write, Edit, WebFetch
 
 # LLM Translation
 
-**IMPORTANT:** Always respond in Korean to the user.
-
 Practical guidance for translation with locally served open models. Public benchmarks measure
 **isolated sentences**; production translation lives in conversations with terminology. This skill
 covers the gap.

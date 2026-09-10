@@ -1,140 +1,72 @@
 ---
 name: python-standards
-description: Enforce Python core coding standards, OOP, Type Hints, Security, and Error Handling. Includes `uv` for environment management. Use for ALL Python code writing, refactoring, or reviewing.
-allowed-tools: Read, Grep, Glob, Bash
+description: Python conventions a linter cannot enforce — uv dependency management, verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence and print/bare-except bans are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
 ---
 
-# Python Core Standards & Security Guide
+# Python Standards
 
-**IMPORTANT:** Always respond in Korean to the user.
+Formatting, naming, import order, docstring presence, bare `except`, and `print()` are **not
+enforced by this document — they are enforced by the linter.** Set that up once per project:
 
-## When to use
-- **New Python Code:** When writing any new Python modules, classes, or functions.
-- **Refactoring:** When improving existing code for readability, performance, or maintainability.
-- **Code Review:** When checking for style violations, security issues, or anti-patterns.
-- **Dependency Management:** When adding packages or setting up project environments with `uv`.
-
-## Instructions
-
-### 1. Environment & Dependency Management (uv)
-The project uses `uv` for management.
-
-1.1. **Virtual Environments:**
-   - Assume `.venv` managed by `uv`.
-   - To create: `uv venv --python <version>`.
-
-1.2. **Installing Packages:**
-   - **MUST use:** `uv add <package_name>` (or `--dev`).
-   - **NEVER use:** `pip install`.
-
-1.3. **Running Scripts:**
-   - **MUST use:** `uv run python script.py`.
-   - This ensures correct environment activation.
-
-1.4. **Syncing & Locking:**
-   - Use `uv sync` to align environment with lockfile.
-   - Use `uv lock` for dependency updates.
-   - Use `uvx <tool>` or `uv tool run <tool>`.
-
-### 2. Core Principles
-- **Clarity:** Code must be easy to understand.
-- **Consistency:** Follow project-wide style.
-- **Simplicity:** Code should be "Pythonic".
-- **Efficiency:** Adhere to DRY; use appropriate data structures.
-- **Maintainability:** Easy to modify/extend.
-
-### 3. Naming Conventions
-3.1. **Variables/Functions:** `snake_case`. Verb-first for functions (e.g., `get_user_data`).
-3.2. **Classes:** `PascalCase`.
-3.3. **Constants:** `UPPER_CASE` at module level.
-3.4. **Modules:** `lowercase` (short).
-
-### 4. Code Style (ruff)
-4.1. **Primary Rule:** Must pass `ruff format` and `ruff check`.
-4.2. **Guidelines:**
-   - Use 4-space indentation (no tabs).
-   - Follow project `pyproject.toml` config.
-
-### 5. Comments and Docstrings
-5.1. **Docstrings:** Mandatory for public modules, functions, classes.
-   - Use `"""Triple double quotes"""`.
-   - Structure: Summary -> Args -> Returns -> Raises.
-5.2. **Comments:** Explain *why*, not *what*. Use `#` sparingly.
-
-### 6. Minimize Duplication (DRY)
-- Identify redundant code.
-- Abstract into functions/classes.
-
-### 7. Object-Oriented Design
-7.1. **SOLID Principles:** S (Single Resp), O (Open/Closed), L (Liskov), I (Interface Segregation), D (Dependency Inv).
-7.2. **Composition over Inheritance:** Prefer `has-a` relationships.
-7.3. **Python OOP:** Use Protocol for interfaces, `@dataclass` for value objects.
-
-### 8. Conciseness & Pythonic Style
-8.1. **Pythonic:** Use list comprehensions, `enumerate`, `zip`, `with`, f-strings.
-8.2. **File Paths:**
-   - **MUST use relative paths** from project root.
-   - Use `pathlib.Path`.
-   - Absolute paths are strictly prohibited unless for system-level config.
-
-### 9. Type Hints (PEP 484)
-9.1. **Required:** All public functions/methods must have types.
-9.2. **Modern Syntax (3.9+):** `list[str]`, `dict[str, int]`, `str | None`.
-9.3. **Tools:** Use `mypy`/`pyright`.
-9.4. **Any:** Avoid `Any`. If used, explain why in comments.
-9.5. **External Packages:**
-   - Verify types by reading installed files in `.venv/.../site-packages/`.
-   - Look for `.pyi` stubs or `py.typed` marker. **NEVER guess types.**
-
-### 10. Error Handling & Logging (Robustness)
-10.1. **Exceptions:**
-   - Catch specific types (`ValueError`), NEVER bare `except:`.
-   - **Dev Mode:** Let it crash (re-raise) to find bugs.
-   - **Prod Mode:** Handle I/O & Network errors gracefully.
-10.2. **Logging:**
-   - **NEVER use `print()`.** Use `logging` module.
-   - `logger = logging.getLogger(__name__)`.
-   - Use `logger.exception()` in `except` blocks.
-
-### 11. Security Principles
-11.1. **Secrets:** **NEVER hardcode secrets**. Use `.env` & `pydantic-settings`.
-11.2. **Input Validation:** Validate ALL external inputs using Pydantic.
-11.3. **Injection Prevention:**
-   - SQL: Use ORM or parameterized queries.
-   - Command: Avoid `shell=True`. Use list arguments.
-11.4. **Path Traversal:** Validate paths using `Path.resolve().is_relative_to()`.
-
-### Checklist
-Before finishing, verify:
-- [ ] Used `uv add` / `uv run`.
-- [ ] Code passes `ruff`, uses `snake_case`/`PascalCase`.
-- [ ] Public functions have Docstrings & Type Hints.
-- [ ] Logic follows DRY & SOLID.
-- [ ] **Logging used instead of `print()`.**
-- [ ] **No hardcoded secrets.**
-- [ ] **Inputs & File paths are validated.**
-
-## Examples
-
-### UV Commands
 ```bash
-uv add requests
-uv run python main.py
+uv init                                    # [project] 생성 — uv 가 관리하는 영역
+uv add --dev ruff mypy pre-commit pytest pytest-asyncio pytest-cov
+cat <skill>/templates/pyproject-tooling.toml >> pyproject.toml   # [tool.*] 만 이어붙인다
+cp <skill>/templates/.pre-commit-config.yaml .
+uv run pre-commit install                  # 이후 커밋마다 자동 검사
+uv run ruff check . && uv run ruff format . && uv run mypy .
 ```
 
-### Type Hints
-```python
-def greet(name: str) -> str:
-    return f"Hello, {name}"
-```
+`dependencies` 와 `[dependency-groups]` 는 `uv add` 가 쓰는 곳이므로 손으로 편집하지 않는다.
+템플릿이 도구 설정만 담은 이유가 그것이다.
 
-### Logging
-```python
-import logging
-logger = logging.getLogger(__name__)
+What follows is only what tooling cannot decide for you.
 
-try:
-    process_data()
-except ValueError as e:
-    logger.exception("Failed to process data")
-```
+## 1. Environment & dependencies (uv)
+
+- Add dependencies with `uv add <pkg>` (`--dev` for tooling). Never manage project dependencies
+  with `pip install`.
+- Run with `uv run python script.py`; run one-off tools with `uvx <tool>`.
+- `uv sync` to match the lockfile, `uv lock` to update it. **Commit `uv.lock`.**
+- *Exception:* inside a container image or a CI bootstrap where uv is absent, pip is correct.
+  Even there the versions come from the lockfile (`uv export`) — never from a hand-written range.
+
+## 2. Types
+
+- Public functions and methods are annotated. Modern syntax only: `list[str]`, `dict[str, int]`,
+  `str | None` — not `typing.List` or `Optional[...]`.
+- Avoid `Any`. When unavoidable, a comment says why the type cannot be narrowed.
+- **Never guess an external package's types — read them.** Check
+  `.venv/lib/python*/site-packages/<pkg>/` for a `py.typed` marker or `.pyi` stubs; if there are
+  none, read the source. A guessed signature is a bug that mypy cannot catch.
+
+## 3. Exceptions & logging
+
+- Catch specific exception types. If you cannot recover, do not catch — let it propagate.
+  Swallowing an exception to return a default erases the cause at the call site.
+- Having caught it, do exactly one of: recover, wrap and re-raise as a domain exception
+  (`raise OrderNotFound(...) from e`), or log it with `logger.exception()` at the top-level
+  boundary (request handler, task runner, `main`).
+- `logger = logging.getLogger(__name__)`. **No `print()` for logging** — user-facing CLI output
+  via `print`/`rich` is fine and expected.
+- Never log secrets, tokens, or personal data.
+
+## 4. Security
+
+- No hardcoded secrets. Use `pydantic-settings` with `.env` — `.env` is gitignored,
+  `.env.example` is committed.
+- Validate every external input (request bodies, query params, files, env vars) through a
+  Pydantic model before use.
+- SQL through the ORM or parameter binding. Never build queries with string formatting.
+- Subprocesses take a list of arguments, never `shell=True`.
+- Paths go through `pathlib`. Resolve externally supplied paths against an explicit anchor and
+  verify they do not escape it:
+
+  ```python
+  root = Path(__file__).resolve().parent      # 또는 설정에서 온 명시적 루트
+  target = (root / user_input).resolve()
+  if not target.is_relative_to(root):
+      raise ValueError(f"path escapes {root}: {user_input}")
+  ```
+
+  Do not open a CWD-relative path — it breaks the moment the process is started from elsewhere.

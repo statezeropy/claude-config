@@ -6,8 +6,6 @@ allowed-tools: Bash
 
 # Git Workflow Guidelines
 
-**IMPORTANT:** Always respond in Korean to the user.
-
 ## When to use
 - **Branch Creation:** When starting new features, bug fixes, or any development work.
 - **Committing Changes:** When saving work with proper commit message format.
@@ -38,15 +36,21 @@ allowed-tools: Bash
      - `refactor`: A code change that neither fixes a bug nor adds a feature
      - `perf`: A code change that improves performance
      - `test`: Adding missing tests or correcting existing tests
-     - `chore`: Changes to the build process or auxiliary tools (uv, git, etc)
+     - `build`: Changes to the build system or dependencies (uv, pyproject)
+     - `ci`: Changes to CI configuration and workflows
+     - `chore`: Anything else that touches no source (tooling, housekeeping)
    - **Example:** `feat(auth): implement jwt token validation`
    - **Example (No scope):** `fix: resolve database connection timeout`
    - Push to remote: `git push origin <branch-name>`
 
 2.3. **Pull Request (STOP HERE):**
-   - Create a PR targeting `main`.
-   - **Assign the Team Lead as the reviewer.**
-   - **DO NOT MERGE.** Wait for human review.
+   - Create a PR targeting `main`, with a body that states what changed and how it was verified.
+   - **DO NOT MERGE.** Creating the PR ends the AI's part; the user reviews and merges.
+   - Do not add reviewers — this is a solo repository unless the project says otherwise.
+
+2.4. **Enforce it with a hook, not with memory:** the `commit-msg` hook in
+   `../python-standards/templates/.pre-commit-config.yaml` (`conventional-pre-commit`) rejects a
+   malformed commit message locally, so the convention holds without anyone remembering it.
 
 ### 3. Release Workflow (Tagging)
 *Execute this only when requested for Production Release.*
@@ -66,7 +70,7 @@ Before finishing, verify:
 - [ ] Branch name includes Type (e.g., feat/...).
 - [ ] Commit message follows `type(scope): desc` format.
 - [ ] PR created for merging to `main`.
-- [ ] **Stopped at PR creation** (waiting for Admin review).
+- [ ] **Stopped at PR creation** (waiting for the user to review and merge).
 
 ## Examples
 

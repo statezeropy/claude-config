@@ -6,8 +6,6 @@ allowed-tools: Read, Grep, Glob, Bash, Write
 
 # Docker Compose Multi-Project Integration
 
-**IMPORTANT:** Always respond in Korean to the user.
-
 ## When to use
 - **Multi-Project Setup:** When integrating multiple independent projects into a unified Docker environment.
 - **Subdomain Routing:** When configuring `*.domain.com` routing with Nginx reverse proxy.
