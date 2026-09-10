@@ -1,6 +1,6 @@
 ---
 name: docs-structure
-description: Organize a project's docs/ directory the way Google does — the five document types (reference, conceptual, how-to/tutorial, design doc, landing page) mapped onto a two-level docs/ tree, what belongs in the code instead of docs/, where planned-but-unimplemented work goes, per-page structure with freshness metadata, and safe restructuring with link verification. Use when creating docs/, restructuring a flat pile of markdown, deciding where a new document belongs, moving or renaming docs, or reviewing documentation for structure and staleness.
+description: Organize a project's docs/ directory the way Google does — the five document types (reference, conceptual, how-to/tutorial, design doc, landing page) mapped onto a two-level docs/ tree, what belongs in the code instead of docs/, where planned-but-unimplemented work goes, per-page structure with freshness metadata, the root README (what it holds, what it links to, what never goes in it), and safe restructuring with link verification. Use when creating docs/, restructuring a flat pile of markdown, deciding where a new document belongs, moving or renaming docs, or reviewing documentation for structure and staleness.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
   reviewed: 2026-09-10
@@ -157,6 +157,43 @@ It holds no content of its own, and it does not serve two audiences at once — 
 page from the contributor page rather than sectioning one page. The repository root `README.md`
 stays the entry point: purpose, status, quick start, links into `docs/`.
 
+## Root README
+
+The repository root `README.md` is the front door, not the house: someone who has never seen
+the project learns in thirty seconds what it is and how to run it, then follows a link. Google's
+rule for a package README is a short summary plus copyable commands plus links to the real
+documentation — nothing more. Start from `templates/README.md`.
+
+What it holds, in reader-urgency order:
+
+1. **Title and one line** — what, for whom.
+2. **Quick start** — at most three commands that work from a fresh clone, then the URL to open.
+   This is where "`docker compose up` brings up the whole stack" is proven.
+3. **구성** — the top-level directories in one line each.
+4. **문서** — a pointer to `docs/README.md` and a four-row table naming the **buckets only**
+   (`concepts/`, `how-to/`, `reference/`, `design/`).
+5. **개발** — the two or three commands a contributor runs first.
+
+**The README is written to change rarely.** Everything in it is something that stays true for
+months — directories, buckets, the three commands. Things that change every week live where
+they are already tracked:
+
+| Not in the README | Lives in |
+|---|---|
+| version, release date | git tags, `pyproject.toml`, `CHANGELOG.md` |
+| status, owner, contact | git history and the platform; a stale status line is worse than none |
+| individual document links | `docs/README.md` — the README names buckets, never files |
+| API reference | `docs/reference/` or the served OpenAPI page |
+| design rationale | `docs/design/` |
+| changelog | `CHANGELOG.md` |
+| tutorials, troubleshooting | `docs/how-to/` |
+
+Two consequences: the README stays under one screen, and a README diff in a PR means a
+command, a directory, or the one-line purpose actually changed — never a routine bump.
+
+In a monorepo each top-level package directory gets its own two-line README ("what is in here,
+where its docs are"); the root README lists the packages.
+
 ## Restructuring safely
 
 Moving docs breaks links silently. In this order:
@@ -207,6 +244,8 @@ Moving docs breaks links silently. In this order:
 - [ ] Link text descriptive; no bare filenames, no "여기"; `check_links.py` passes.
 - [ ] Contracts appear exactly once in the tree.
 - [ ] Landing page links only, and names what is not documentation.
+- [ ] Root README: Quick start works from a fresh clone; names buckets not files; no version,
+      status or owner line.
 - [ ] Anything describing unimplemented work is a design doc with a Status, or a `todo/` item with
       a context link — not an unlabelled page.
 
