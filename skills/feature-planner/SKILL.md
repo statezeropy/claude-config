@@ -1,6 +1,8 @@
 ---
 name: feature-planner
-description: Creates phase-based feature plans with quality gates and incremental delivery structure. Use when planning HOW to deliver work already decided on — breaking features into phases, sequencing tasks, creating roadmaps. Keywords: plan, planning, phases, breakdown, strategy, roadmap, organize, structure, outline. For deciding WHAT to build and WHY (technical design doc, RFC, architecture proposal, alternatives analysis), use design-doc instead.
+description: "Creates phase-based feature plans with quality gates and incremental delivery structure. Use when planning HOW to deliver work already decided on — breaking features into phases, sequencing tasks, creating roadmaps. Keywords: plan, planning, phases, breakdown, strategy, roadmap, organize, structure, outline. For deciding WHAT to build and WHY (technical design doc, RFC, architecture proposal, alternatives analysis), use design-doc instead."
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Feature Planner

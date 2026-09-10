@@ -1,6 +1,8 @@
 ---
 name: python-standards
 description: Python conventions a linter cannot enforce — uv dependency management, verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence and print/bare-except bans are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Python Standards

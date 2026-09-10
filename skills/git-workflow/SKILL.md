@@ -2,6 +2,8 @@
 name: git-workflow
 description: Enforce Modified GitHub Flow and Conventional Commits without Jira integration. Use when creating branches, committing changes, or creating Pull Requests.
 allowed-tools: Bash
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Git Workflow Guidelines

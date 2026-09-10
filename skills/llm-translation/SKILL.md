@@ -2,6 +2,8 @@
 name: llm-translation
 description: Choose, prompt, and evaluate open translation models — MT-specialized vs general LLM, quantization limits for instruction following, conversational context and glossary/hotword injection, cascade speech translation, and contrastive evaluation that proves context actually helps. Use when selecting a local MT model, designing translation prompts with context or terminology constraints, deciding FP8 vs INT4, building a speech-translation pipeline, or measuring translation quality beyond BLEU/COMET.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit, WebFetch
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # LLM Translation
