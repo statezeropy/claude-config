@@ -4,7 +4,7 @@
 |---|---|
 | **Author** | <name> |
 | **Reviewers** | <name (role)>, <name (role)> |
-| **Status** | Draft \| In Review \| Approved \| Superseded |
+| **Status** | Draft \| In Review \| Approved \| Implemented \| Superseded |
 | **Last Updated** | YYYY-MM-DD |
 
 ---

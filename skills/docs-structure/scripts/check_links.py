@@ -4,7 +4,8 @@
 Catches the failure mode of documentation restructuring: a link that still points at the
 pre-move path, or a same-directory link left behind after a rename. External links
 (http, https, mailto) and pure anchors are skipped; for `file.md#section` only the file
-is checked.
+is checked. Fenced code blocks and inline code spans are masked first, so a link shown as an
+example in code font is not mistaken for a real one.
 
 Usage:
 
@@ -23,6 +24,8 @@ import sys
 from pathlib import Path
 
 LINK = re.compile(r"\[(?P<label>[^\]]*)\]\((?P<target>[^)\s]+?)(?P<anchor>#[^)]*)?\)")
+FENCE = re.compile(r"^\s*(```|~~~)")
+CODE_SPAN = re.compile(r"`+[^`\n]*`+")
 SKIP_PREFIXES = ("http://", "https://", "mailto:", "tel:", "#", "<")
 DEFAULT_IGNORES = (".git", "node_modules", ".venv", "venv", "__pycache__", "dist", "build")
 
@@ -41,6 +44,26 @@ def markdown_files(paths: list[Path], ignores: tuple[str, ...]) -> list[Path]:
     return sorted(set(found))
 
 
+def mask_code(text: str) -> str:
+    """Blank out code blocks and inline spans, preserving offsets so line numbers stay right.
+
+    A documentation page routinely shows an example link in code font
+    (`` `[여기](…)` ``); that is prose about links, not a link, and must not be resolved.
+    """
+    out: list[str] = []
+    in_fence = False
+    for line in text.splitlines(keepends=True):
+        if FENCE.match(line):
+            in_fence = not in_fence
+            out.append(" " * (len(line) - 1) + "\n" if line.endswith("\n") else " " * len(line))
+            continue
+        if in_fence:
+            out.append(" " * (len(line) - 1) + "\n" if line.endswith("\n") else " " * len(line))
+            continue
+        out.append(CODE_SPAN.sub(lambda m: " " * len(m.group(0)), line))
+    return "".join(out)
+
+
 def check(files: list[Path]) -> tuple[int, list[str]]:
     checked = 0
     broken: list[str] = []
@@ -50,7 +73,7 @@ def check(files: list[Path]) -> tuple[int, list[str]]:
         except (UnicodeDecodeError, OSError) as exc:
             broken.append(f"{file}: 읽기 실패 — {exc}")
             continue
-        for match in LINK.finditer(text):
+        for match in LINK.finditer(mask_code(text)):
             target = match.group("target")
             if target.startswith(SKIP_PREFIXES):
                 continue

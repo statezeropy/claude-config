@@ -40,6 +40,9 @@ foregone conclusion wastes reviewer time.
 
 Use [TEMPLATE.md](TEMPLATE.md). Fill every section. Write to
 `docs/design/DESIGN_<short-name>.md`, creating `docs/design/` if needed.
+When the work lands, flip **Status** to `Implemented` and fold what is now true into
+`docs/concepts/` and `docs/reference/` — the design doc stays as the record of why
+(see the `docs-structure` skill).
 
 ### 3. Self-check against the hard rules
 
