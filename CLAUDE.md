@@ -84,6 +84,9 @@
 
 **평상시**: 변경을 머지할 때마다 `## [Unreleased]` 아래에 항목을 누적.
 **릴리즈 시**: `[Unreleased]` → `## [X.Y.Z] - YYYY-MM-DD` 로 이동 + 하단 compare 링크 추가 + version bump.
+**버전 규칙**: 내가 버전을 지정하지 않으면 **`Z`(patch)만 +1**. `X`·`Y` 는 내가 명시적으로 번호를 말할 때만
+올라간다 — `feat:` 나 `BREAKING CHANGE:` 가 있어도 AI 가 minor/major 를 추론해 올리지 않는다
+(절차는 `git-workflow` skill §3).
 
 **버전 섹션 구조** (해당 항목 있을 때만 출력):
 

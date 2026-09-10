@@ -56,7 +56,20 @@ metadata:
 
 ### 3. Release Workflow (Tagging)
 *Execute this only when requested for Production Release.*
-- Command: `git tag v1.0.0` -> `git push origin v1.0.0`
+
+3.1. **Version bump rule (`vX.Y.Z`):**
+   - **No version given by the user → bump `Z` only.** Read the latest tag
+     (`git describe --tags --abbrev=0`), increment the patch number, and use that.
+   - **`X` or `Y` change only when the user names the version explicitly**
+     (e.g. "release 1.3.0", "major 2.0.0"). Never infer a minor or major bump from the
+     commit types — a `feat:` commit does not raise `Y` on its own, and `BREAKING CHANGE:`
+     does not raise `X` on its own. Point it out, then wait for the user's number.
+   - First release with no tag yet: ask; do not assume `0.1.0` or `1.0.0`.
+
+3.2. **Procedure:**
+   - Move `[Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` (see CLAUDE.md 릴리즈 노트).
+   - Bump the version in `pyproject.toml` to match; commit as `chore(release): vX.Y.Z`.
+   - `git tag vX.Y.Z` → `git push origin vX.Y.Z` (the tag is the production trigger).
 
 ### 4. Emergency Hotfix Strategy
 *Use this ONLY when `main` is ahead of Production and a critical bug exists in Production.*
