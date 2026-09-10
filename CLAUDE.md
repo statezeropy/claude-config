@@ -58,18 +58,16 @@
   - `docs/todo/`: 적용된 항목은 삭제한다. 항목이 다 비면 파일 자체를 삭제한다.
     이슈 트래커를 쓰는 프로젝트라면 `docs/todo/` 를 만들지 않는다 — 백로그가 두 곳으로 갈라진다.
 
-## 개발 표준 스택
+## 개발 표준 스택 — 각 항목의 결정은 괄호 안 skill 이 단일 출처
 
-- **Python**: python-standards, type hints, pydantic validation
-- **API**: FastAPI standards, RESTful 원칙
-- **ORM**: SQLAlchemy + Alembic migration
-- **DB**: PostgreSQL
-- **캐싱**: Redis
-- **테스트**: pytest + Playwright E2E
-- **인프라**: Docker Compose + nginx
-- **Git**: Modified GitHub Flow (feature branch), Conventional Commits
-- **AI/LLM**: LangChain/LangGraph orchestration
-- **문서**: 설계서 기반 개발 (docs/*.md)
+- **Python**: uv · ruff · mypy · pydantic (`python-standards` + `templates/`)
+- **API**: FastAPI — URL 표면과 내부 구조 (`fastapi-standards`)
+- **Data**: PostgreSQL · SQLite · SQLAlchemy · Alembic · Redis (`data-conventions`)
+- **테스트·CI**: pytest + Playwright E2E, GitHub Actions (`service-conventions`)
+- **인프라**: Docker Compose + nginx (`docker-compose-setup`)
+- **Git**: Modified GitHub Flow, Conventional Commits (`git-workflow`)
+- **AI/LLM**: LangChain/LangGraph, Langfuse (`llm-app-conventions`), vLLM (`vllm-serving`)
+- **문서**: `docs/` 2-depth, 설계서 기반 개발 (`docs-structure`, `design-doc`)
 
 ## Git 규칙
 
