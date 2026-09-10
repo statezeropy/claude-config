@@ -11,7 +11,13 @@ cd ~/.claude
 git clone https://github.com/statezeropy/claude-config.git
 ln -sf claude-config/CLAUDE.md CLAUDE.md
 ln -sf claude-config/skills skills
+
+# 공유 설정(outputStyle 등)을 전역 settings.json 에 병합 — 기존 키는 보존된다 (jq 필요)
+[ -f settings.json ] || echo '{}' > settings.json
+jq -s '.[0] * .[1]' settings.json claude-config/settings.json > settings.json.tmp && mv settings.json.tmp settings.json
 ```
+
+공유할 설정이 늘면 `claude-config/settings.json` 만 고치고 위 병합 명령을 다시 실행한다.
 
 ### Codex CLI
 
