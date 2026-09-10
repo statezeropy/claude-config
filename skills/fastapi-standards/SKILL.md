@@ -1,6 +1,6 @@
 ---
 name: fastapi-standards
-description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Implementation mechanics (auth, sessions, error handlers) are read from the installed library version, not pinned here; cross-service naming contracts live in service-conventions.
+description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Also the internals every project shares — settings and env names, dependency names, schema suffixes (Create/Update/Read), error response shape, router registration, auth path, request id. Library mechanics are read from the installed version; data-layer decisions live in data-conventions.
 metadata:
   reviewed: 2026-09-10
 ---
@@ -11,8 +11,8 @@ This skill covers **the shape of the API surface** only — the part a client se
 changed later without breaking someone. Implementation mechanics (OAuth2/JWT, session handling,
 exception handlers, `AsyncClient` tests) are deliberately not pinned here: they move with library
 versions, so read the installed one — `.venv/lib/python*/site-packages/<pkg>` and its docs via
-MCP (`python-standards` §2). Schema types, migration rules, Redis keys and test layout are in
-`service-conventions`.
+MCP (`python-standards` §2). Column types, migrations and Redis keys are in `data-conventions`;
+test layout in `service-conventions`.
 
 ## 1. URL surface
 
@@ -41,8 +41,9 @@ creates a job you can then `GET`. That is a noun, not a disguised verb.
   `{"error": ...}` — raise `HTTPException`, or a domain exception mapped by a handler.
 - Every request and response body is a Pydantic model, declared via `response_model`. No bare
   `dict` returns — the OpenAPI schema is the contract, and a `dict` erases it.
-- Separate models per direction: `ItemCreate` (input) / `Item` (output). Never accept an input
-  model that carries `id`, `created_at`, or role fields the client must not set.
+- Separate models per direction: `ItemCreate` (input), `ItemUpdate` (all fields optional),
+  `ItemRead` (output). Never accept an input model that carries `id`, `created_at`, or role
+  fields the client must not set.
 
 ## 3. Layout
 
@@ -62,6 +63,19 @@ through `Depends()` — never module-level global state.
 Adding a repository layer on top of SQLAlchemy is optional and usually unnecessary; the ORM
 session is already a data-mapper. Add one only when a service must swap the data source.
 
+## 4. Internals every project shares
+
+| Thing | Where and what it is called |
+|---|---|
+| settings | `app/core/config.py` — `class Settings(BaseSettings)`, `get_settings()` with `@lru_cache`, injected by `Depends(get_settings)`. Env names are fixed: `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`, `ENV` (`dev` / `test` / `prod`), `LOG_LEVEL` |
+| dependencies | `app/api/deps.py` — `get_db`, `get_settings`, `get_current_user`, `get_current_active_user`, `require_role(...)`. Same names in every project |
+| schemas | `XCreate` (input), `XUpdate` (every field optional), `XRead` (output, `model_config = ConfigDict(from_attributes=True)`). Read models never expose password hashes or internal flags |
+| errors | body `{"detail": str, "error_code": "UPPER_SNAKE"}`. Domain exceptions in `app/core/exceptions.py` subclass `AppError(code, status)`; one `@app.exception_handler(AppError)` in `main.py`. Services raise domain errors, never `HTTPException` |
+| routers | `app/api/v1/router.py` aggregates; each module declares `router = APIRouter(prefix="/users", tags=["users"])`; **tag == resource == module name**. `main.py` includes the aggregate once with `prefix="/api/v1"` |
+| lifecycle | a `lifespan` context manager for startup/shutdown (`on_event` is deprecated) |
+| auth | `POST /api/v1/auth/token`; `Authorization: Bearer <jwt>`; claims `sub`, `exp`, `scopes`. Password hashing via `pwdlib[bcrypt]` |
+| request id | middleware echoes `X-Request-ID` if present, else mints a uuid4; every log line carries it; JSON logs when `ENV=prod` |
+
 ## Review checklist
 
 - [ ] Path starts with `/api/v1`, prefix set at router include (not repeated per route).
@@ -69,3 +83,4 @@ session is already a data-mapper. Add one only when a service must swap the data
 - [ ] Correct method and status code; errors raised, never returned with `200`.
 - [ ] `response_model` set; separate input/output models; no client-settable server fields.
 - [ ] Route body has no business logic and no global state.
+- [ ] Dependency, schema and env names match §4 — nothing project-specific invented.
