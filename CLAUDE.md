@@ -66,7 +66,7 @@
 - **테스트·CI**: pytest + Playwright E2E, GitHub Actions (`service-conventions`)
 - **인프라**: Docker Compose + nginx (`docker-compose-setup`)
 - **Git**: Modified GitHub Flow, Conventional Commits (`git-workflow`)
-- **AI/LLM**: LangChain/LangGraph, Langfuse (`llm-app-conventions`), vLLM (`vllm-serving`)
+- **AI/LLM**: LangChain/LangGraph, Langfuse (`llm-app-conventions`)
 - **문서**: `docs/` 2-depth, 설계서 기반 개발 (`docs-structure`, `design-doc`)
 
 ## Git 규칙

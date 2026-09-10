@@ -9,8 +9,8 @@ metadata:
 
 LangChain's API moves faster than any document about it, so nothing here names a class that
 could be renamed next quarter. Verify the current API in the installed package
-(`.venv/lib/python*/site-packages/langchain_core`) before writing code — the `vllm-serving`
-habit. What is fixed is **where things live and what crosses a boundary**.
+(`.venv/lib/python*/site-packages/langchain_core`) before writing code — read the source at
+the pinned version, not a blog post. What is fixed is **where things live and what crosses a boundary**.
 
 ## Prompts
 
