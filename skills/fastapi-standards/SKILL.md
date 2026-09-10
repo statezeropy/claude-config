@@ -1,20 +1,18 @@
 ---
 name: fastapi-standards
-description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Implementation guidance (auth, DB sessions, error handlers, testing) lives in fastapi-development, sqlalchemy, and pytest-patterns.
+description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Implementation mechanics (auth, sessions, error handlers) are read from the installed library version, not pinned here; cross-service naming contracts live in service-conventions.
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # FastAPI API Conventions
 
 This skill covers **the shape of the API surface** only — the part a client sees and cannot be
-changed later without breaking someone. For implementation patterns use the other skills:
-
-| Need | Skill |
-|---|---|
-| Auth (OAuth2/JWT), error handlers, middleware, deployment | `fastapi-development` |
-| Async sessions, queries, transactions | `sqlalchemy` |
-| Schema/request model validation | `pydantic` |
-| Tests, fixtures, `AsyncClient` | `pytest-patterns` |
-| Migrations | `alembic` |
+changed later without breaking someone. Implementation mechanics (OAuth2/JWT, session handling,
+exception handlers, `AsyncClient` tests) are deliberately not pinned here: they move with library
+versions, so read the installed one — `.venv/lib/python*/site-packages/<pkg>` and its docs via
+MCP (`python-standards` §2). Schema types, migration rules, Redis keys and test layout are in
+`service-conventions`.
 
 ## 1. URL surface
 

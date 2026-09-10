@@ -89,9 +89,9 @@ tests/
 ### Test Naming Convention
 Follow pytest conventions:
 ```python
-# tests/unit/test_llm_chain.py
+# tests/unit/test_order_service.py
 
-class TestLLMChain:
+class TestOrderService:
     def test_invoke_returns_valid_response(self):
         # Arrange → Act → Assert pattern
         ...

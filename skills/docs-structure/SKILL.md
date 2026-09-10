@@ -2,6 +2,8 @@
 name: docs-structure
 description: Organize a project's docs/ directory the way Google does — the five document types (reference, conceptual, how-to/tutorial, design doc, landing page) mapped onto a two-level docs/ tree, what belongs in the code instead of docs/, where planned-but-unimplemented work goes, per-page structure with freshness metadata, and safe restructuring with link verification. Use when creating docs/, restructuring a flat pile of markdown, deciding where a new document belongs, moving or renaming docs, or reviewing documentation for structure and staleness.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Documentation structure
@@ -99,6 +101,9 @@ Canonical order, from Google's Markdown style guide:
 
    Google's tooling mails the owner when a doc goes untouched for months. Even without tooling the
    line answers "is this still true?" faster than `git log` — and a doc with no owner goes stale.
+   *Design docs are the exception:* they carry the `design-doc` template's header table (Author /
+   Reviewers / Status / Last Updated), which already holds owner and date. One header per page,
+   not both.
 3. **One to three sentences** covering WHO / WHAT / WHY: who the page is for, what it covers, what
    the reader walks away with. WHEN is the reviewed date; WHERE is the repository.
 4. **Prerequisites**, on how-to pages, before step 1.

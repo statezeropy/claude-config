@@ -2,6 +2,8 @@
 name: design-doc
 description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. Do NOT use for phase/task breakdown or delivery planning (use feature-planner), for writing code, or for UI/visual design.
 allowed-tools: Read, Grep, Glob, Write, Edit, AskUserQuestion
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Design Doc (Google convention)

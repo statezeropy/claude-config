@@ -79,4 +79,25 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
-addopts = "-q --strict-markers --strict-config"
+addopts = "-q -ra --strict-markers --strict-config"
+# --strict-markers 이므로 여기 없는 마커는 에러다. 배치 규약은 service-conventions 참조.
+markers = [
+  "unit: no I/O, no network — runs in seconds",
+  "integration: needs the docker compose stack (DB, Redis)",
+  "e2e: Playwright against the running app",
+  "slow: deselect with -m 'not slow'",
+]
+
+# ---------------------------------------------------------------- coverage
+[tool.coverage.run]
+source = ["src"]            # 패키지가 app/ 이면 ["app"]
+branch = true
+omit = ["tests/*", "alembic/*"]
+
+[tool.coverage.report]
+show_missing = true
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+  "@overload",
+]

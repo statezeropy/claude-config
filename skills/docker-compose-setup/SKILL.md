@@ -2,6 +2,8 @@
 name: docker-compose-setup
 description: Integrate multiple independent projects into a single Docker Compose environment with subdomain-based routing (*.domain.com), Nginx reverse proxy, and automatic Let's Encrypt SSL management. Use when setting up multi-project Docker infrastructure, configuring subdomain routing, or automating SSL certificates.
 allowed-tools: Read, Grep, Glob, Bash, Write
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # Docker Compose Multi-Project Integration

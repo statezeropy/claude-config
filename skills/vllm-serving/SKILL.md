@@ -2,6 +2,8 @@
 name: vllm-serving
 description: Serve and debug models on vLLM's OpenAI-compatible server — endpoint surface, speech-to-text (transcriptions/translations/realtime), model-specific request-field handling, GPU memory and startup failures, container/compose wiring. Use when deploying a vLLM server, choosing which vLLM endpoint a gateway should call, adding an ASR/STT tier, pinning image versions, or diagnosing a vLLM container that fails to start or rejects requests.
 allowed-tools: Read, Grep, Glob, Bash, WebFetch
+metadata:
+  reviewed: 2026-09-10
 ---
 
 # vLLM Serving
