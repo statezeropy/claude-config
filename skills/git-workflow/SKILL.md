@@ -47,6 +47,10 @@ metadata:
 
 2.3. **Pull Request (STOP HERE):**
    - Create a PR targeting `main`, with a body that states what changed and how it was verified.
+   - If the change touches a judgment surface (prompts, chains, graphs, UI rendering, user
+     flows), walk the whole `tests/qa/qasheet.csv` first and put the result in the body:
+     `QA: 12/12 pass` or `QA: 3 fail — <what was seen>`. One failing row means no merge
+     (`service-conventions` §QA sheet).
    - **DO NOT MERGE.** Creating the PR ends the AI's part; the user reviews and merges.
    - Do not add reviewers — this is a solo repository unless the project says otherwise.
 

@@ -61,5 +61,8 @@ the pinned version, not a blog post. What is fixed is **where things live and wh
 ## Tests
 
 - Unit tests never call a provider: the factory returns a fake model when `ENV=test`.
-- Golden tests for prompts live in `tests/prompts/` as (input, expected model) pairs run against
-  recorded responses — the regression suite for prompt edits.
+- Split every LLM feature by oracle (`service-conventions` §Tests): what can be computed —
+  the output parses into its Pydantic model, length and language limits, forbidden content —
+  is pytest; whether the output is *good* is a row in `tests/qa/qasheet.csv`, judged by a
+  person or an AI on the real output, with the case's input living in seed data.
+- A prompt change is a judgment surface: the whole QA sheet is walked before its PR merges.
