@@ -67,7 +67,8 @@ metadata:
    - First release with no tag yet: ask; do not assume `0.1.0` or `1.0.0`.
 
 3.2. **Procedure:**
-   - Move `[Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` (see CLAUDE.md 릴리즈 노트).
+   - Move `[Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD` — section layout and
+     the curation procedure are in [RELEASE.md](RELEASE.md).
    - Bump the version in `pyproject.toml` to match; commit as `chore(release): vX.Y.Z`.
    - `git tag vX.Y.Z` → `git push origin vX.Y.Z` (the tag is the production trigger).
 

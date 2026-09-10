@@ -65,3 +65,15 @@ claude /plugin install korean-skills@korean-skills
 /plugin marketplace add Agents365-ai/365-skills
 /plugin install drawio@365-skills
 ```
+
+## Skill 작성 원칙
+
+이 저장소의 skill 은 **결정**(규약·구조·워크플로)을 담고, 라이브러리 **지식**은 담지 않는다.
+
+- 지식은 버전과 함께 썩는다. 2026-09 정리 때 지식형 skill 10개(41k줄)에서 Pydantic v1·SQLAlchemy 1.x·
+  deprecated LangChain API 가 발견됐고, 같은 기간 결정형 skill 은 한 줄도 무효가 되지 않았다.
+- skill 이 고정해도 되는 것은 **모양** — 이름·URL·디렉토리·커밋 형식·계약 위치. **메커니즘** — 어떤
+  라이브러리·언제 캐시·동기/비동기 — 은 프로젝트의 `docs/design/` 에서 측정과 함께 결정한다.
+- 린터·포매터·훅으로 옮길 수 있는 규칙은 산문으로 두지 않는다 (`python-standards/templates/`).
+- 빠르게 움직이는 라이브러리는 사실을 적지 말고 **확인하는 방법**을 적는다 (핀한 버전의 소스 읽기).
+- 소유한 skill 에는 `metadata.reviewed` 날짜를 둔다. 오래된 것부터 다시 읽는다.
