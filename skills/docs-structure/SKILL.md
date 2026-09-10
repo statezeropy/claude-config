@@ -6,8 +6,6 @@ allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 
 # Documentation Structure (Google convention)
 
-**IMPORTANT:** Always respond in Korean to the user.
-
 Google's documentation guidance splits on **why the reader opened the page**, not on which team
 wrote it. A `docs/` folder organized by team artifact (`product/`, `architecture/`, `api/`) forces
 readers to know the org chart; one organized by purpose does not.

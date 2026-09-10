@@ -1,0 +1,33 @@
+# uv add --dev pre-commit && uv run pre-commit install
+# 이후 커밋마다 자동 실행된다. CI 에서도 같은 훅을 돌려라: uv run pre-commit run --all-files
+# rev 는 복사 직후 `uv run pre-commit autoupdate` 로 최신 태그에 맞춰라 (아래 값은 고정 예시).
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.14.0
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-added-large-files
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-yaml
+      - id: detect-private-key          # 시크릿 커밋 차단
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.18.2
+    hooks:
+      - id: mypy
+        additional_dependencies: [pydantic]   # 플러그인 필요한 패키지만 추가
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.2.0
+    hooks:
+      - id: conventional-pre-commit        # git-workflow 의 커밋 규약을 훅으로 강제
+        stages: [commit-msg]

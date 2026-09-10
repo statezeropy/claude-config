@@ -1,0 +1,82 @@
+# python-standards 의 자동화 부분 — pyproject.toml 의 [tool.*] 섹션만 담은 조각.
+#
+# [project] / dependencies / [dependency-groups] / [build-system] 은 여기 없다.
+# 그건 uv 가 관리한다:
+#
+#   uv init                                  # [project], [build-system] 생성
+#   uv add --dev ruff mypy pre-commit pytest pytest-asyncio pytest-cov
+#                                            # [dependency-groups] dev 에 자동 추가
+#   cat <이 파일> >> pyproject.toml           # 아래 [tool.*] 섹션만 이어붙인다
+#   cp .pre-commit-config.yaml . && uv run pre-commit install
+#
+# 손으로 편집할 곳은 아래뿐이다. dependencies 를 직접 타이핑하면 uv.lock 과 어긋난다.
+# 도구 설정을 pyproject 밖에 두지 않는 이유: ruff·mypy·pytest 가 모두 pyproject 를 읽으므로
+# 설정 파일이 흩어지지 않는다.
+
+# ---------------------------------------------------------------- ruff (lint + format)
+[tool.ruff]
+line-length = 100
+target-version = "py312"        # requires-python 과 맞춰라
+src = ["src", "."]
+
+[tool.ruff.lint]
+select = [
+  "E", "W",   # pycodestyle           — 스타일, bare except(E722)
+  "F",        # pyflakes              — 미사용 import/변수, 정의되지 않은 이름
+  "I",        # isort                 — import 정렬
+  "N",        # pep8-naming           — snake_case / PascalCase / UPPER_CASE
+  "UP",       # pyupgrade             — list[str], str | None 강제 (구식 typing 차단)
+  "D",        # pydocstyle            — 공개 API docstring
+  "ANN",      # flake8-annotations    — 타입 힌트 누락
+  "S",        # flake8-bandit         — 하드코딩 시크릿, shell=True, SQL 문자열 조립
+  "B",        # flake8-bugbear        — 가변 기본인자 등 실수 패턴
+  "A",        # flake8-builtins       — 빌트인 이름 가리기
+  "C4",       # comprehensions
+  "T20",      # flake8-print          — print() 금지
+  "PTH",      # flake8-use-pathlib    — os.path 대신 pathlib
+  "SIM",      # flake8-simplify
+  "TRY",      # tryceratops           — except 안티패턴 (TRY400: logger.error → exception)
+  "RUF",
+]
+ignore = [
+  "D100",    # 모듈 docstring 까지 요구하지 않는다
+  "D104",    # 패키지 __init__ docstring
+  "ANN401",  # *args/**kwargs 의 Any
+  "TRY003",  # 예외 메시지를 호출부에 쓰는 것을 허용
+  "E501",    # 줄 길이는 formatter 가 처리
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"     # Summary → Args → Returns → Raises
+
+[tool.ruff.lint.flake8-annotations]
+suppress-dummy-args = true
+mypy-init-return = true
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "ANN", "S101"]        # 테스트에 docstring·assert 규칙 미적용
+"**/cli.py" = ["T20"]                    # CLI 의 사용자 출력은 print 가 정상
+"scripts/**" = ["T20", "D", "ANN"]
+"alembic/versions/**" = ["D", "ANN", "N999"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+# ---------------------------------------------------------------- mypy
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+show_error_codes = true
+
+# 스텁 없는 서드파티는 아래처럼 개별 예외 처리한다. 전역 ignore_missing_imports 는 쓰지 않는다
+# — 어떤 패키지가 타입을 안 주는지 파일에 남아 있어야 나중에 걷어낼 수 있다.
+[[tool.mypy.overrides]]
+module = ["untyped_package.*"]
+ignore_missing_imports = true
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-q --strict-markers --strict-config"

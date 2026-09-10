@@ -6,8 +6,6 @@ allowed-tools: Read, Grep, Glob, Bash, WebFetch
 
 # vLLM Serving
 
-**IMPORTANT:** Always respond in Korean to the user.
-
 Serving guidance grounded in the vLLM source, not in blog posts. vLLM's request schema, model
 support, and flag names change every few minor versions — verify against the **tag you pin**
 before designing around a field.
