@@ -21,8 +21,9 @@
   (`python-standards/templates/`). 혼자여도 branch → PR → CI → 머지를 깨지 않는다.
 - **인프라는 코드다.** Docker Compose·nginx·마이그레이션까지 코드로 정의하고,
   새 팀원이 `docker compose up` 한 번으로 전체 환경을 띄울 수 있어야 한다.
-- **같은 이미지가 SaaS(application plane)와 병원 단독 설치본 둘 다에서 돈다.** 배포 형태는
-  `TENANCY_MODE` env 로만 갈리고, 코드는 분기하지 않는다 (`deployment-conventions`).
+- **프로젝트는 기본적으로 제품이다.** 같은 이미지가 SaaS(application plane)와 병원 단독 설치본
+  둘 다에서 돌고, 배포 형태는 `TENANCY_MODE` env 로만 갈린다 (`deployment-conventions`).
+  데모·내부 도구는 설계 문서에 `internal` 을 선언해서 제품 규약(테넌시·감사·배포 모드)에서 빠진다.
 - **테스트가 증거다.** "되는 것 같다"가 아니라 테스트 통과가 완료 기준이다.
   E2E로 실제 사용자 시나리오를 검증하고 DB에 데이터가 저장되는지까지 확인한다.
 - **설계가 먼저다.** 설계 문서(`docs/design/`)가 구현의 근거다. 코드부터 짜지 않는다.

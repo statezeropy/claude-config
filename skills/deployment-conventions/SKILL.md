@@ -11,6 +11,23 @@ One image, one codebase, two deployment modes. The mode is an environment variab
 never branches on "am I SaaS or on-prem" — only settings and adapters do (`fastapi-standards`
 §4, `llm-app-conventions`). Everything below exists to keep that true.
 
+## Scope — product by default, `internal` opts out
+
+Every project is a **product** — something that ships to customers as SaaS, as an on-site
+install, or both — unless its design doc (or README, when there is no design doc) declares
+`Product class: internal`. A demo UI, an experiment, a script for our own use is `internal`.
+
+| | product (default) | `internal` |
+|---|---|---|
+| this skill | all sections | only *Compose rules* and *Several products on one VM* |
+| `data-conventions` Tenancy + Audit log | required | skipped |
+| `fastapi-standards` §4 tenancy / environment rows | required | skipped |
+| design-doc Reliability section | required | optional |
+| The bar (below) | required | — |
+
+Declare it once, at the start. If an `internal` project turns into a product, update the design
+doc and apply the product sections then — do not pre-apply them "just in case".
+
 ## The two modes
 
 | | `TENANCY_MODE=saas` | `TENANCY_MODE=single` |
@@ -92,6 +109,30 @@ A release for a customer site is one directory, versioned by the git tag (`git-w
   from ACME — the VM has internet — but that is that environment's decision, recorded in its
   `docs/design/`, not a product convention.
 - Verify DNS with a public resolver before expecting anything: `nslookup <host> 8.8.8.8`.
+
+## The bar — what "production-ready" means for a product
+
+A product is ready when it could pass the **AWS Foundational Technical Review** self-assessment:
+the *Partner Hosted* checklist for `saas`, the *Customer Deployed* checklist for `single`. We
+do not copy the checklist — it is external, maintained, and revised — we link it:
+[FTR guide](https://aws.amazon.com/partners/foundational-technical-review/) and the checklists
+in AWS Partner Central. The FTR asks for **properties**, not methods, which is why it fits:
+
+| FTR asks for | already enforced by | the project decides (in `docs/design/`) |
+|---|---|---|
+| TLS ≥ 1.2 in transit | `templates/nginx.conf` | — |
+| tenant isolation | `data-conventions` §Tenancy (RLS, both modes) | any model beyond pool |
+| backups, restore, **RTO / RPO** | "verified restore is part of install QA" | the numbers, cadence, location |
+| high availability | — | topology |
+| incident runbooks | `docs/how-to/` bucket | contents |
+| audit logging | `data-conventions` §Audit log | retention |
+| infrastructure as code, CI/CD | `templates/compose.yml`, `python-standards/templates/ci.yml` | deploy targets |
+| monitoring and alerting | `/health`, `/ready`, JSON logs | thresholds, dashboards |
+| secrets handling | `.env` + `.env.example`, no secrets in logs | the secret store |
+| account hygiene (root MFA, IAM, CloudTrail, CIS) | — outside any repository | — |
+
+The rule that keeps this table honest: **if two of our products could reasonably differ on it,
+it belongs to the project; if they must not differ, it belongs here.**
 
 ## Troubleshooting — the four that recur
 

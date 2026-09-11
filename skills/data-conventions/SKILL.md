@@ -128,6 +128,9 @@ It follows every rule above, plus:
 
 ## Tenancy
 
+*Applies to every product — the default. A project declared `internal`
+(`deployment-conventions` §Scope) skips this section and the audit log.*
+
 Every product runs in two modes (`deployment-conventions`): `saas` — many tenants in one
 instance — and `single` — one tenant inside the customer's network. **The schema is identical
 in both**; `single` is a tenant of one. Nothing in this section is switched off by mode.
