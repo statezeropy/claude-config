@@ -78,6 +78,12 @@ because ..." if that is the case.>
 system touches health records, EMR/HIS data, or clinical documents, this section is mandatory
 and specific.>
 
+### Deployment modes
+
+<How the design behaves in `saas` and in `single` (hospital, air-gapped): any dependency
+that needs the internet and its offline fallback, tenant-scoped data introduced and its RLS
+policy, what an upgrade at a customer site requires (migration, data backfill, downtime).>
+
 ### Observability
 
 <What signals prove this works in production: metrics, logs, traces, alerts. How a failure
