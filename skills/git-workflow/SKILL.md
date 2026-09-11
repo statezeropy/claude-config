@@ -46,11 +46,11 @@ metadata:
    - Push to remote: `git push origin <branch-name>`
 
 2.3. **Pull Request (STOP HERE):**
-   - Create a PR targeting `main`, with a body that states what changed and how it was verified.
-   - If the change touches a judgment surface (prompts, chains, graphs, UI rendering, user
-     flows), walk the whole `tests/qa/qasheet.csv` first and put the result in the body:
-     `QA: 12/12 pass` or `QA: 3 fail — <what was seen>`. One failing row means no merge
-     (`service-conventions` §QA sheet).
+   - Create a PR targeting `main`. The body is the project's `.github/pull_request_template.md`
+     (copied from [templates/pull_request_template.md](templates/pull_request_template.md)) —
+     it is the **definition of done** in one place: tests, QA sheet when a judgment surface
+     changed, `CHANGELOG [Unreleased]`, docs in the same PR, design-doc Status, deploy notes.
+     Every box is ticked or marked 해당 없음; an empty box means the PR stays open.
    - **DO NOT MERGE.** Creating the PR ends the AI's part; the user reviews and merges.
    - Do not add reviewers — this is a solo repository unless the project says otherwise.
 
