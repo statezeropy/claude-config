@@ -128,12 +128,11 @@ It follows every rule above, plus:
 
 ## Tenancy
 
-*Applies to every product — the default. A project declared `internal`
-(`deployment-conventions` §Scope) skips this section and the audit log.*
-
-Every product runs in two modes (`deployment-conventions`): `saas` — many tenants in one
-instance — and `single` — one tenant inside the customer's network. **The schema is identical
-in both**; `single` is a tenant of one. Nothing in this section is switched off by mode.
+*Only for a product where several customers share one instance.* Whether a product is
+multi-tenant is its design doc's decision — but decide it at the start: retrofitting
+`tenant_id` into every table later is the most expensive migration a product goes through, so
+if there is any realistic path to a shared instance, apply this section now. A multi-tenant
+product installed for a single customer keeps the same schema and simply has one tenant.
 
 - **Every tenant-owned table has `tenant_id`** (`BIGINT`, NOT NULL, FK → `tenants.id`) via
   `TenantMixin`. Only global tables — settings, code lists, `tenants` itself — omit it.
@@ -164,7 +163,7 @@ in both**; `single` is a tenant of one. Nothing in this section is switched off 
 
 ## Audit log
 
-Health-data products record who did what to whose data. One append-only table; the app role
+*For a product that handles patient or other regulated personal data.* It records who did what to whose data. One append-only table; the app role
 has INSERT and SELECT only, no UPDATE or DELETE:
 
 ```

@@ -78,19 +78,17 @@ because ..." if that is the case.>
 system touches health records, EMR/HIS data, or clinical documents, this section is mandatory
 and specific.>
 
-### Product class and deployment modes
+### Deployment
 
-<`product` (default) or `internal`. If `internal` — a demo, an experiment, an internal tool —
-write the word and stop; the tenancy, audit, deployment-mode and reliability requirements do
-not apply. If `product`: how the design behaves in `saas` and in `single` (hospital,
-air-gapped) — any dependency that needs the internet and its offline fallback, tenant-scoped
-data introduced and its RLS policy, what an upgrade at a customer site requires.>
+<Where this runs — hosted by us, installed at a customer site, or both — and whether several
+customers share one instance (then `data-conventions` §Tenancy applies). Anything that needs
+the internet and what happens without it. What an upgrade at a customer site requires.>
 
 ### Reliability
 
-<Product only. Failure modes and what the user sees for each; RTO and RPO as numbers; backup
-cadence and where the last verified restore is recorded; what degrades when a dependency (LLM
-endpoint, Redis, object storage) is down.>
+<Failure modes and what the user sees for each; RTO and RPO as numbers; backup cadence and
+where the last verified restore is recorded; what degrades when a dependency (LLM endpoint,
+Redis, object storage) is down.>
 
 ### Observability
 
