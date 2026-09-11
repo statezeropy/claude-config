@@ -1,6 +1,6 @@
 ---
 name: design-doc
-description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. Do NOT use for phase/task breakdown or delivery planning (use feature-planner), for writing code, or for UI/visual design.
+description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. After approval, hands off to implementation scopes tracked in docs/todo/. Do NOT use for writing code or for UI/visual design.
 allowed-tools: Read, Grep, Glob, Write, Edit, AskUserQuestion
 metadata:
   reviewed: 2026-09-10
@@ -51,11 +51,22 @@ When the work lands, flip **Status** to `Implemented` and fold what is now true 
 Run the hard rules below against your own draft before showing it. Fix violations silently;
 do not present a draft you know is non-compliant.
 
-### 4. Hand off
+### 4. Hand off — scopes, not a plan document
 
-Once the document reaches **Approved**, the design doc's job is done. Offer to continue with
-`feature-planner`, which turns an approved design into phased, testable delivery. Do not do
-phase breakdown inside the design doc.
+Once the document reaches **Approved**, the design doc's job is done. What follows is not a
+third document; it is a list of **scopes** in `docs/todo/<feature>.md` (the work-stream file
+`docs-structure` defines — items deleted as they land, file deleted when empty).
+
+- A scope is a **vertical slice** that can be finished and merged on its own: it touches every
+  layer it needs (schema, service, endpoint, UI) and only the parts it needs. Never a layer
+  ("do the models", "do the endpoints").
+- **Scope 1 is the walking skeleton**: the thinnest end-to-end path that proves the design
+  works in a running system. Width comes after.
+- One scope = one PR. Its done-criterion follows the oracle rule (`service-conventions`
+  §Tests): a test when pass/fail can be computed, a QA-sheet row when it needs judgment. No
+  coverage percentages, no hour estimates.
+- Get the user's approval of the scope list before starting, and **redraw it after scope 1** —
+  the real structure of the work is discovered by walking it, not imagined up front.
 
 ## Hard rules
 
