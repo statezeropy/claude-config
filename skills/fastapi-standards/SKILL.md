@@ -33,6 +33,19 @@ The rest follows standard REST resource naming:
 *Exception:* an asynchronous processing job is itself a resource — `POST /api/v1/summarizations`
 creates a job you can then `GET`. That is a noun, not a disguised verb.
 
+**Operational endpoints live outside the prefix.** They are a contract with the infrastructure
+(compose `healthcheck`, nginx/Caddy, CI smoke), not with API clients, so they are unversioned,
+unauthenticated, and identical in every project:
+
+| Path | Answers | Response |
+|---|---|---|
+| `GET /health` | is the process up (liveness) | `200 {"status": "ok"}` — no dependencies touched |
+| `GET /ready` | can it serve traffic (readiness) | `200 {"status": "ok", "checks": {"db": "ok", "redis": "ok"}}`; any failing check → `503` with the same shape |
+| `GET /metrics` | Prometheus scrape, only when the project exposes metrics | text exposition format |
+
+Compose and CI probe `/health`; a load balancer or orchestrator gates on `/ready`. Nothing else
+escapes `/api/v1`.
+
 ## 2. Status codes & responses
 
 - `201` for a created resource (with the resource in the body), `204` for a delete with no body,
@@ -78,7 +91,8 @@ session is already a data-mapper. Add one only when a service must swap the data
 
 ## Review checklist
 
-- [ ] Path starts with `/api/v1`, prefix set at router include (not repeated per route).
+- [ ] Path starts with `/api/v1`, prefix set at router include (not repeated per route);
+      only `/health`, `/ready`, `/metrics` are outside it.
 - [ ] Plural noun collections, kebab-case, ≤3 levels of nesting, filters in query params.
 - [ ] Correct method and status code; errors raised, never returned with `200`.
 - [ ] `response_model` set; separate input/output models; no client-settable server fields.
