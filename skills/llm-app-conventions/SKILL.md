@@ -35,10 +35,9 @@ the pinned version, not a blog post. What is fixed is **where things live and wh
 
 - Model id, temperature, max tokens and timeout come from `Settings`: `LLM_MODEL`,
   `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`, `LLM_TIMEOUT_S`. No literal model ids in code.
-- **The provider is an OpenAI-compatible endpoint chosen by `LLM_BASE_URL`.** In `saas` it is
-  a cloud API; in `single` (hospital, no internet) it is an on-site server such as vLLM
-  (`deployment-conventions`, profile `llm`). Same client, same code — only the URL and model
-  name change. A provider-specific SDK is used only when a capability has no OpenAI-compatible
+- **The provider is an OpenAI-compatible endpoint chosen by `LLM_BASE_URL`** — a cloud API or
+  a local server such as vLLM (`deployment-conventions` compose profile `llm`). Same client,
+  same code; only the URL and model name change. A provider-specific SDK is used only when a capability has no OpenAI-compatible
   form, and then behind the same factory.
 - One factory, `get_chat_model(purpose: str = "default")` in `app/core/llm.py`, is the only
   place a chat model is constructed. Per-purpose overrides (`"extraction"` at temperature 0)
@@ -52,8 +51,8 @@ the pinned version, not a blog post. What is fixed is **where things live and wh
   `metadata` (`{"user_id": …, "request_id": …}`) through the runnable config.
 - Langfuse is the tracing backend: `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`,
   `LANGFUSE_HOST`. The callback is attached once in `get_chat_model()`, not per call.
-- **Tracing is optional by construction.** When `LANGFUSE_HOST` is unset (a `single` site with
-  no self-hosted Langfuse), the factory attaches no callback and nothing else changes.
+- **Tracing is optional by construction.** When `LANGFUSE_HOST` is unset, the factory attaches
+  no callback and nothing else changes.
 - Cost and latency are read from the trace, never logged by hand.
 
 ## Shape of a flow
