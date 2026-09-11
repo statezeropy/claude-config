@@ -1,6 +1,6 @@
 ---
 name: data-conventions
-description: Decisions for the data layer that stay identical across every project — PostgreSQL and SQLite column types, common columns and mixins, SQLAlchemy Base with naming convention, session and transaction rules, Alembic env.py and revision rules, enum storage, and the Redis key vocabulary, TTL tiers, value format and single key-builder module. Use when creating or changing tables, models, migrations, cache/lock/session keys, or wiring a database engine.
+description: Decisions for the data layer that stay identical across every project — PostgreSQL and SQLite column types, common columns and mixins, SQLAlchemy Base with naming convention, session and transaction rules, Alembic env.py and revision rules, enum storage, multi-tenancy (tenant_id on every table, tenant-first indexes, PostgreSQL row-level security in both deployment modes), the audit log, and the Redis key vocabulary, TTL tiers, value format and single key-builder module. Use when creating or changing tables, models, migrations, cache/lock/session keys, or wiring a database engine.
 metadata:
   reviewed: 2026-09-10
 ---
@@ -125,6 +125,52 @@ It follows every rule above, plus:
 - A revision that has run anywhere — the dev server counts — is never edited. Add a new one.
 - Schema and data migrations are separate revisions; data migrations use `op.execute()` with
   SQL, never ORM models (models drift; a migration must not).
+
+## Tenancy
+
+Every product runs in two modes (`deployment-conventions`): `saas` — many tenants in one
+instance — and `single` — one tenant inside the customer's network. **The schema is identical
+in both**; `single` is a tenant of one. Nothing in this section is switched off by mode.
+
+- **Every tenant-owned table has `tenant_id`** (`BIGINT`, NOT NULL, FK → `tenants.id`) via
+  `TenantMixin`. Only global tables — settings, code lists, `tenants` itself — omit it.
+- **Every index on a tenant-owned table leads with `tenant_id`**: `(tenant_id, status, created_at)`.
+  A filter on tenant alone, or tenant + status, uses it; an index that does not start with
+  `tenant_id` is a full scan for every tenant-scoped query — the most common RLS performance
+  mistake.
+- **Isolation is enforced twice.** The service filters by the current tenant, and PostgreSQL
+  **row-level security** refuses other tenants' rows even when the service forgets:
+
+  ```sql
+  ALTER TABLE tickets ENABLE ROW LEVEL SECURITY;
+  ALTER TABLE tickets FORCE ROW LEVEL SECURITY;   -- 소유자 롤도 예외 없음 (없으면 우회됨)
+  CREATE POLICY tenant_isolation ON tickets
+      USING (tenant_id = NULLIF(current_setting('app.tenant_id', true), '')::bigint);
+  ```
+
+  The app sets the tenant **per transaction** — `SET LOCAL app.tenant_id = :tid` right after
+  `BEGIN` (a SQLAlchemy `after_begin` listener reading the request context) — so it cannot leak
+  across pooled connections; with no context set, a query returns zero rows rather than
+  everything. The policy also blocks an INSERT for another tenant. Cost ≈ 0.3 ms per query.
+  The app connects as a **non-superuser role** (superusers bypass every policy), and each
+  policy is created in the same Alembic revision as its table.
+- `get_tenant` (`fastapi-standards` §4) is the only place a tenant id is read. Models never
+  accept `tenant_id` from a client payload; the mixin fills it from the request context.
+- SQLite has no RLS: unit tests exercise the service filter only; integration tests run on
+  PostgreSQL so the policy is exercised too.
+
+## Audit log
+
+Health-data products record who did what to whose data. One append-only table; the app role
+has INSERT and SELECT only, no UPDATE or DELETE:
+
+```
+audit_log(id, tenant_id, at timestamptz, actor_id, action, entity, entity_id, request_id, detail jsonb)
+```
+
+Written by the service layer on every create / update / delete of a domain entity and on every
+read of a patient record. `detail` holds the names of changed fields, never their values — the
+audit log must not become a second copy of the PHI it guards.
 
 ## Redis
 

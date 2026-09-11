@@ -80,13 +80,15 @@ session is already a data-mapper. Add one only when a service must swap the data
 
 | Thing | Where and what it is called |
 |---|---|
-| settings | `app/core/config.py` — `class Settings(BaseSettings)`, `get_settings()` with `@lru_cache`, injected by `Depends(get_settings)`. Env names are fixed: `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`, `ENV` (`dev` / `test` / `prod`), `LOG_LEVEL` |
+| settings | `app/core/config.py` — `class Settings(BaseSettings)`, `get_settings()` with `@lru_cache`, injected by `Depends(get_settings)`. Env names are fixed: `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`, `ENV` (`dev` / `test` / `prod`), `LOG_LEVEL`, `PORT`, `TENANCY_MODE` (`saas` / `single`), `TENANT_ID` (single only), `LLM_BASE_URL`, `AUTH_BACKEND` |
+| tenancy | `get_tenant` in `deps.py` is the **only** reader of the tenant id: `saas` → the JWT `tid` claim, `single` → `settings.tenant_id`. Never from a body, query or header the client controls. Every service call receives the tenant from this dependency (`data-conventions` §Tenancy) |
+| environment | the app promises the same behaviour behind any edge — plain HTTP on `PORT`, proxy headers trusted only from the proxy, `/health` + `/ready`, graceful SIGTERM, no local state, JSON logs to stdout (`deployment-conventions`). Anything that needs the internet is behind a capability flag |
 | dependencies | `app/api/deps.py` — `get_db`, `get_settings`, `get_current_user`, `get_current_active_user`, `require_role(...)`. Same names in every project |
 | schemas | `XCreate` (input), `XUpdate` (every field optional), `XRead` (output, `model_config = ConfigDict(from_attributes=True)`). Read models never expose password hashes or internal flags |
 | errors | body `{"detail": str, "error_code": "UPPER_SNAKE"}`. Domain exceptions in `app/core/exceptions.py` subclass `AppError(code, status)`; one `@app.exception_handler(AppError)` in `main.py`. Services raise domain errors, never `HTTPException` |
 | routers | `app/api/v1/router.py` aggregates; each module declares `router = APIRouter(prefix="/users", tags=["users"])`; **tag == resource == module name**. `main.py` includes the aggregate once with `prefix="/api/v1"` |
 | lifecycle | a `lifespan` context manager for startup/shutdown (`on_event` is deprecated) |
-| auth | `POST /api/v1/auth/token`; `Authorization: Bearer <jwt>`; claims `sub`, `exp`, `scopes`. Password hashing via `pwdlib[bcrypt]` |
+| auth | `POST /api/v1/auth/token`; `Authorization: Bearer <jwt>`; claims `sub`, `exp`, `scopes`, `tid`. The identity source is an adapter chosen by `AUTH_BACKEND` — OIDC in `saas`; the on-site backend (hospital directory or local accounts) is decided per deployment. Password hashing via `pwdlib[bcrypt]` |
 | request id | middleware echoes `X-Request-ID` if present, else mints a uuid4; every log line carries it; JSON logs when `ENV=prod` |
 
 ## Review checklist
