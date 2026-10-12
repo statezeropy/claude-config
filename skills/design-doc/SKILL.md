@@ -3,7 +3,7 @@ name: design-doc
 description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. After approval, hands off to implementation scopes tracked in docs/todo/. Do NOT use for writing code or for UI/visual design.
 allowed-tools: Read, Grep, Glob, Write, Edit, AskUserQuestion
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-12
 ---
 
 # Design Doc (Google convention)
@@ -40,8 +40,11 @@ foregone conclusion wastes reviewer time.
 
 ### 2. Draft against the template
 
-Use [TEMPLATE.md](TEMPLATE.md). Fill every section. Write to
-`docs/design/DESIGN_<short-name>.md`, creating `docs/design/` if needed.
+Use [TEMPLATE.md](TEMPLATE.md). Fill every section. Write to `docs/design/<title>.md`, creating
+the directory if needed. The file is the title in the lowercase-hyphen form the `docs-structure`
+skill sets for every page — so it names the decision, not the feature
+(`tenant-isolation-by-schema.md`, not `multi-tenancy.md` or `DESIGN_tenancy.md`). If the
+directory already follows another style, match it; do not start a second one.
 When the work lands, flip **Status** to `Implemented` and fold what is now true into
 `docs/concepts/` and `docs/reference/` — the design doc stays as the record of why
 (see the `docs-structure` skill).

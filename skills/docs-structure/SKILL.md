@@ -3,7 +3,7 @@ name: docs-structure
 description: Organize a project's docs/ directory the way Google does — the five document types (reference, conceptual, how-to/tutorial, design doc, landing page) mapped onto a two-level docs/ tree, what belongs in the code instead of docs/, where planned-but-unimplemented work goes, per-page structure with freshness metadata, the root README (what it holds, what it links to, what never goes in it), and safe restructuring with link verification. Use when creating docs/, restructuring a flat pile of markdown, deciding where a new document belongs, moving or renaming docs, or reviewing documentation for structure and staleness.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-12
 ---
 
 # Documentation structure
@@ -194,6 +194,33 @@ command, a directory, or the one-line purpose actually changed — never a routi
 In a monorepo each top-level package directory gets its own two-line README ("what is in here,
 where its docs are"); the root README lists the packages.
 
+## File names
+
+A file name is the page's H1 turned into a path: lowercase, words joined by hyphens, ASCII only
+(Google's filename rules). Nothing else needs deciding, because *Page structure* already decides
+the title — a how-to page is a bare infinitive (`run-the-stack.md`), a concept page a noun phrase
+(`serving-architecture.md`), a design doc the decision it records
+(`tenant-isolation-by-schema.md`, not `multi-tenancy.md`). `ls docs/design/` should read as the
+list of what has been decided.
+
+- **ASCII even when the body is Korean.** Translate the subject; do not transliterate the title
+  (`배포 절차` → `deploy.md`, never `baepo-jeolcha.md`). A path lives in URLs, anchors, code
+  comments and `grep`, where non-ASCII costs more than it tells. The reader who wants the Korean
+  title skimming a list is on the landing page, which shows it.
+- **No prefix, number or date.** A prefix (`DESIGN_`, `api-`) is a directory flattened into a
+  name: the bucket already says what kind of page this is, and once a bucket passes the threshold
+  in *The tree* (about seven files, along a boundary the reader knows) the answer is a
+  subdirectory, not a longer name. A number or date says *when* a page was written, which is the
+  freshness header's job; it never says *what* the page is about.
+- **A bucket that adopts an outside convention follows it whole.** ADRs are numbered
+  (`docs/adr/0007-use-pgbouncer.md`) because the number is the record's identity — Nygard: numbered
+  sequentially, never reused — and a superseding record points at it. Generated reference keeps
+  its generator's names. The landing page names the convention so nobody "fixes" it later.
+- **One style per directory.** Where a directory already uses underscores or a prefix throughout,
+  match it — Google allows underscores "to stay consistent" — or rename all of it in one change.
+  Half-converted directories sort worse than either style alone.
+- **Renaming is moving.** The same links break; follow *Restructuring safely*.
+
 ## Restructuring safely
 
 Moving docs breaks links silently. In this order:
@@ -243,6 +270,8 @@ Moving docs breaks links silently. In this order:
 - [ ] Steps numbered, imperative, one action each.
 - [ ] Link text descriptive; no bare filenames, no "여기"; `check_links.py` passes.
 - [ ] Contracts appear exactly once in the tree.
+- [ ] File names are the H1 in lowercase-hyphen ASCII; no prefix, number or date unless the
+      bucket's named convention (ADR) requires it; one style per directory.
 - [ ] Landing page links only, and names what is not documentation.
 - [ ] Root README: Quick start works from a fresh clone; names buckets not files; no version,
       status or owner line.
@@ -264,3 +293,7 @@ Moving docs breaks links silently. In this order:
   — when to split, task-based headings, progressive disclosure.
 - [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html) — the `TODO`
   format that pending items must carry a tracked link.
+- [Google developer documentation style guide — Filenames](https://developers.google.com/style/filenames)
+  — lowercase, hyphens, ASCII only; underscores only to stay consistent with an existing directory.
+- [Nygard, "Documenting Architecture Decisions"](https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions)
+  — ADRs numbered sequentially, numbers never reused, superseded records kept and pointed at.

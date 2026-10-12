@@ -1,7 +1,7 @@
 <!-- .github/pull_request_template.md — PR 을 열면 자동으로 채워진다. 해당 없는 항목은 지우지 말고 "해당 없음" 으로 남긴다. -->
 
 ## 무엇을, 왜
-<!-- 한 단락. 설계 문서나 이슈가 있으면 링크: docs/design/DESIGN_<name>.md · #123 -->
+<!-- 한 단락. 설계 문서나 이슈가 있으면 링크: docs/design/… · #123 -->
 
 ## 검증
 - [ ] `uv run pytest -m "unit or integration"` 로컬 통과 (CI 가 다시 확인)
