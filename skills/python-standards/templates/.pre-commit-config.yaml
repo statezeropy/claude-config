@@ -3,7 +3,7 @@
 # rev 는 복사 직후 `uv run pre-commit autoupdate` 로 최신 태그에 맞춰라 (아래 값은 고정 예시).
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.14.0
+    rev: v0.17.0
     hooks:
       - id: ruff-check
         args: [--fix]

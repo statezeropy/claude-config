@@ -36,7 +36,11 @@ select = [
   "PTH",      # flake8-use-pathlib    — os.path 대신 pathlib
   "SIM",      # flake8-simplify
   "TRY",      # tryceratops           — except 안티패턴 (TRY400: logger.error → exception)
-  "RUF",
+  "ERA",      # eradicate             — 주석 처리된 코드 금지 (지우고 git 에 맡긴다)
+  "TD",       # flake8-todos          — `# TODO(작성자): 설명` 형식 강제, FIXME/XXX 는 TODO 로
+  "FIX",      # flake8-fixme          — HACK 금지 (TD001 이 못 잡는 유일한 태그)
+  "PGH",      # pygrep-hooks          — 코드 없는 `# noqa` / `# type: ignore` 차단
+  "RUF",      #                       — RUF100~104 가 쓸모없는·존재하지 않는 noqa 코드를 잡는다
 ]
 ignore = [
   "D100",    # 모듈 docstring 까지 요구하지 않는다
@@ -44,6 +48,8 @@ ignore = [
   "ANN401",  # *args/**kwargs 의 Any
   "TRY003",  # 예외 메시지를 호출부에 쓰는 것을 허용
   "E501",    # 줄 길이는 formatter 가 처리
+  "FIX002",  # TODO 자체는 허용한다 — 형식은 TD 가 본다. FIX 는 FIXME/XXX/HACK 를 막기 위해 켠 것
+  "TD003",   # TODO 에 이슈 링크를 요구하지 않는다. 이슈 트래커를 쓰는 프로젝트는 이 줄을 지운다
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -68,6 +74,7 @@ python_version = "3.12"
 strict = true
 warn_unreachable = true
 show_error_codes = true
+enable_error_code = ["ignore-without-code"]   # `# type: ignore[code]` 를 요구한다 — strict 에 들어 있지 않다
 
 # 스텁 없는 서드파티는 아래처럼 개별 예외 처리한다. 전역 ignore_missing_imports 는 쓰지 않는다
 # — 어떤 패키지가 타입을 안 주는지 파일에 남아 있어야 나중에 걷어낼 수 있다.

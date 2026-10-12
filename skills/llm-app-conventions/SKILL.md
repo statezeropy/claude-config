@@ -1,8 +1,8 @@
 ---
 name: llm-app-conventions
-description: Version-independent decisions for LLM applications built with LangChain/LangGraph — where prompts live (Langfuse prompt management first, app/prompts/ otherwise), Pydantic models as the only output boundary, model configuration through settings and one factory, tracing with fixed run names and tags, and when a flow is a LangGraph graph versus an LCEL pipe. Use when adding a prompt, chain, graph, LLM call, retriever, or tracing to an application.
+description: Version-independent decisions for LLM applications built with LangChain/LangGraph — where prompts live (Langfuse prompt management first, app/prompts/ otherwise), the language of model-facing text (Korean while building, English once Implemented), Pydantic models as the only output boundary, model configuration through settings and one factory, tracing with fixed run names and tags, and when a flow is a LangGraph graph versus an LCEL pipe. Use when adding a prompt, chain, graph, LLM call, retriever, or tracing to an application.
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-12
 ---
 
 # LLM application conventions
@@ -22,6 +22,23 @@ the pinned version, not a blog post. What is fixed is **where things live and wh
 - Prompt names are `<domain>.<task>` (`support.summarize_ticket`). The same string is the
   tracing `run_name`, so a trace and its prompt are one lookup apart.
 - Few-shot examples live next to the prompt, not in the calling code.
+
+## Language of model-facing text
+
+Prompts, system messages, few-shot examples, tool names and descriptions, and any docstring a
+framework turns into a tool schema are **model-facing text**: part of the product, not comments.
+The comment rules in `CLAUDE.md` do not apply to them; these do.
+
+- **While the feature is being built, write them in Korean.** The developer reads and rewrites a
+  prompt dozens of times before it settles; one they cannot skim is one that does not get fixed.
+- **When the developer judges the feature complete — the design doc's Status flips to
+  `Implemented` — switch them to English.** Models are trained, documented and evaluated mostly
+  in English, so that is the version whose behavior is best predicted in production.
+- The switch is a prompt change, therefore a judgment surface: walk the QA sheet before its PR
+  merges (§Tests) and version it in Langfuse like any other edit.
+- Keep the two audiences apart in code: a docstring the framework ships to the model is
+  model-facing and follows this section; the comment above it is for the next developer and
+  follows `CLAUDE.md`.
 
 ## Boundaries
 
