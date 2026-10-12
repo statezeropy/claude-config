@@ -1,14 +1,15 @@
 ---
 name: python-standards
-description: Python conventions a linter cannot enforce — uv dependency management, verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence and print/bare-except bans are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
+description: Python conventions a linter cannot enforce — uv dependency management, verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence, print/bare-except bans and comment hygiene (TODO format, commented-out code, blanket noqa/type-ignore) are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-12
 ---
 
 # Python Standards
 
-Formatting, naming, import order, docstring presence, bare `except`, and `print()` are **not
-enforced by this document — they are enforced by the linter.** Set that up once per project:
+Formatting, naming, import order, docstring presence, bare `except`, `print()`, and comment
+hygiene — TODO format, commented-out code, `# noqa` / `# type: ignore` without a code — are
+**not enforced by this document — they are enforced by the linter.** Set that up once per project:
 
 ```bash
 uv init                                    # [project] 생성 — uv 가 관리하는 영역
