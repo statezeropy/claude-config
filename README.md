@@ -84,3 +84,5 @@ claude /plugin install korean-skills@korean-skills
 - 린터·포매터·훅으로 옮길 수 있는 규칙은 산문으로 두지 않는다 (`python-standards/templates/`).
 - 빠르게 움직이는 라이브러리는 사실을 적지 말고 **확인하는 방법**을 적는다 (핀한 버전의 소스 읽기).
 - 소유한 skill 에는 `metadata.reviewed` 날짜를 둔다. 오래된 것부터 다시 읽는다.
+- skill 본문은 **영어**로 쓴다 — 독자가 LLM 이다. 한국어는 예시·인용 라벨에만. CLAUDE.md 의
+  "문서는 기본 한국어" 는 프로젝트 산출물(`docs/`)에 대한 규칙이며 skill 에는 적용되지 않는다.

@@ -3,7 +3,7 @@ name: design-doc
 description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. After approval, hands off to implementation scopes tracked in docs/todo/. Do NOT use for writing code or for UI/visual design.
 allowed-tools: Read, Grep, Glob, Write, Edit, AskUserQuestion
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-12
 ---
 
 # Design Doc (Google convention)
@@ -12,7 +12,10 @@ A design doc is a **decision artifact**, not a specification and not a plan. It 
 the right people to disagree with you *before* the code is written. If a section does not help
 a reviewer challenge or approve the decision, it does not belong in the document.
 
-Write documents in **English**. Section headings are fixed (below); do not rename them.
+Write the document in **Korean** — it is a project deliverable under `docs/`, read by people and
+agents alike (`CLAUDE.md` 언어). What is English stays English: identifiers, code, external
+terms, and the section headings, which are fixed (below) under their Google names — do not
+rename or translate them; the template and [REVIEW.md](REVIEW.md) refer to them by those names.
 
 ## Mode selection
 
