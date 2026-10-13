@@ -1,6 +1,6 @@
 # .github/workflows/ci.yml — lint · type · test on every push to main and every PR.
 # 각 step 은 개발자가 로컬에서 치는 명령과 동일하다 (service-conventions §CI).
-# 릴리즈(태그 → 배포)는 release.yml 로 분리한다.
+# 릴리즈(GitHub Release → 이미지 빌드·배포)는 release.yml 로 분리한다.
 name: ci
 
 on:

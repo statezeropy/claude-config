@@ -48,8 +48,10 @@
 
 - 항상 feature branch에서 작업한다. PR 생성까지가 AI의 몫이고, 리뷰·머지는 사용자가 한다.
 - `CHANGELOG.md`가 릴리즈 노트의 단일 출처다. 항목은 커밋 제목 복붙이 아니라 **영향**으로 쓴다.
+- **버전은 파일에 쓰지 않는다.** GitHub Release의 태그 `vX.Y.Z`가 유일한 출처이고 빌드가 그것을 읽는다.
+  버전 부여는 사용자가 요청할 때만 — 요청받으면 agent가 `gh release create`로 대행한다.
 - 버전을 지정하지 않으면 **`Z`만 +1**. `X`·`Y`는 명시적으로 번호를 말할 때만 올린다 —
-  `feat:`·`BREAKING CHANGE:`로 추론하지 않는다. 절차와 노트 형식은 `git-workflow` skill.
+  `feat:`·`BREAKING CHANGE:`로 추론하지 않는다. 절차·노트 형식·날짜 접미사(`_vYYMMDD`)는 `git-workflow` skill.
 
 ## 코드 품질
 

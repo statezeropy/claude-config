@@ -12,8 +12,22 @@ its **impact**, so a teammate, an operator, or an API consumer reads "what this 
 ## Rhythm
 
 - **On every merge:** add an entry under `## [Unreleased]`.
-- **On release:** move `[Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD`, add the compare link at the
-  bottom, bump the version (rule in SKILL.md §3.1).
+- **On release:** move `[Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` and add the compare link at
+  the bottom. Nothing else changes — the version is the GitHub Release's tag, not a field in a
+  file (SKILL.md §3).
+
+## Release body — cut from the section, never retyped
+
+`gh release create` takes the section body straight from the file, so the two cannot differ:
+
+```bash
+V=X.Y.Z
+gh release create "v$V" --target main --title "v$V" \
+  --notes-file <(awk -v v="$V" '/^## /{f=index($0,v)>0; next} f' CHANGELOG.md)
+```
+
+The `awk` prints the lines between the heading that contains the version and the next `## `
+heading; it works for both heading styles above.
 
 ## Version section
 

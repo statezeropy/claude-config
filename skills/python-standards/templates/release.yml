@@ -1,0 +1,45 @@
+# .github/workflows/release.yml — GitHub Release 가 발행되면 그 태그로 이미지를 빌드·푸시한다.
+# 버전은 Release 태그 하나에서 온다 (git-workflow §3). 이 워크플로는 버전을 만들지 않고 읽기만 한다.
+# 사람이 만든 Release 만 이 워크플로를 깨운다 — 워크플로 안에서 GITHUB_TOKEN 으로 만든 Release 는
+# GitHub 규칙상 새 워크플로 실행을 만들지 않는다.
+# e2e 는 service-conventions §Tests 대로 여기에 job 을 더한다.
+name: release
+
+on:
+  release:
+    types: [published]            # draft 를 발행할 때도, pre-release 도 이 타입으로 들어온다
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: version
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: echo "value=${TAG#v}" >> "$GITHUB_OUTPUT"      # v1.4.2 → 1.4.2
+      - uses: docker/metadata-action@v5
+        id: meta
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}}
+            type=sha
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.version.outputs.value }}
+          # Dockerfile: ARG VERSION → ENV SETUPTOOLS_SCM_PRETEND_VERSION=$VERSION (deployment-conventions §Image version)

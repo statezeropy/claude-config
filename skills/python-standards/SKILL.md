@@ -1,8 +1,8 @@
 ---
 name: python-standards
-description: Python conventions a linter cannot enforce — uv dependency management, verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence, print/bare-except bans and comment hygiene (TODO format, commented-out code, blanket noqa/type-ignore) are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
+description: Python conventions a linter cannot enforce — uv dependency management, the package version read from the GitHub Release tag (hatch-vcs, never a version field), verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence, print/bare-except bans and comment hygiene (TODO format, commented-out code, blanket noqa/type-ignore) are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
 metadata:
-  reviewed: 2026-10-12
+  reviewed: 2026-10-13
 ---
 
 # Python Standards
@@ -12,10 +12,12 @@ hygiene — TODO format, commented-out code, `# noqa` / `# type: ignore` without
 **not enforced by this document — they are enforced by the linter.** Set that up once per project:
 
 ```bash
-uv init                                    # [project] 생성 — uv 가 관리하는 영역
+uv init --build-backend hatch              # [project] 생성 — hatchling 이 §5 의 버전 읽기를 맡는다
 uv add --dev ruff mypy pre-commit pytest pytest-asyncio pytest-cov
 cat <skill>/templates/pyproject-tooling.toml >> pyproject.toml   # [tool.*] 만 이어붙인다
+# 그리고 §5 의 두 줄을 손으로 고친다: dynamic = ["version"], build-system 에 hatch-vcs
 cp <skill>/templates/.pre-commit-config.yaml .
+mkdir -p .github/workflows && cp <skill>/templates/ci.yml <skill>/templates/release.yml .github/workflows/
 uv run pre-commit install                  # 이후 커밋마다 자동 검사
 uv run ruff check . && uv run ruff format . && uv run mypy .
 ```
@@ -73,3 +75,35 @@ What follows is only what tooling cannot decide for you.
   ```
 
   Do not open a CWD-relative path — it breaks the moment the process is started from elsewhere.
+
+## 5. Version — read from the release tag, never written to a file
+
+The version is the GitHub Release tag (`git-workflow` §3). `pyproject.toml` declares it
+dynamic and hatch-vcs computes it from git at build and sync time. Two hand edits after
+`uv init --build-backend hatch` — the only edits ever made outside `[tool.*]`:
+
+```toml
+[project]
+dynamic = ["version"]              # version = "…" 줄은 지운다
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+```
+
+`[tool.hatch.version]` and `[tool.uv] cache-keys` come with the template. What follows from it:
+
+- `uv.lock` records no version for the project, so `uv sync --locked` passes across releases
+  and there is nothing to keep in step.
+- Between releases the version is `X.Y.(Z+1).devN+g<sha>`. Compare versions with
+  `packaging.version.Version`, never as strings.
+- A build without `.git` — a Docker context, a rebuilt sdist — needs
+  `SETUPTOOLS_SCM_PRETEND_VERSION=<X.Y.Z>`; `release.yml` passes the tag as `--build-arg VERSION`
+  for exactly this. Without it the build fails, and it should: no `fallback-version` — an image
+  that reports `0.0.0` is worse than no image.
+- `uv version` refuses a dynamic version. There is nothing to bump.
+- One release per commit. With two release tags on one commit `git describe` picks one of them
+  and the version is ambiguous; the CHANGELOG PR in `git-workflow` §3.3 makes every release a new
+  commit, so this only happens by hand.
+- uv's own backend `uv_build` rejects dynamic metadata (astral-sh/uv#14561); that is why the
+  backend is hatchling.
