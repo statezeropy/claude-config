@@ -2,7 +2,7 @@
 name: service-conventions
 description: Cross-cutting house rules for a Python service that cannot be inferred from a library — test directory layout, marker and fixture names, test database naming, the oracle rule that decides what is a pytest test versus a row in tests/qa/qasheet.csv (human- or AI-judged QA), asyncio rules (no asyncio.run in libraries, timeouts on every external call, TaskGroup over bare create_task), and the CI workflow file split. Use when laying out or adding tests, writing async code, or adding a CI workflow, and when deciding whether a check belongs in pytest or in the QA sheet. Data-layer decisions are in data-conventions, API shape in fastapi-standards, LLM apps in llm-app-conventions.
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-10-13
 ---
 
 # Service conventions
@@ -42,7 +42,7 @@ tokens, is in Korean" is pytest; "the response is a good answer" is the QA sheet
 - The test database is `<app>_test`; `ENV=test` selects it and disables outbound calls.
 - Files `test_<module>.py`, functions `test_<behaviour>`:
   `test_login_rejects_expired_token`, not `test_login_2`.
-- CI runs `unit` and `integration` on every push and PR; `e2e` on `main` and on tags.
+- CI runs `unit` and `integration` on every push and PR; `e2e` on `main` and on releases.
 
 ## QA sheet — `tests/qa/qasheet.csv`
 
@@ -89,7 +89,8 @@ Start from `templates/qasheet.csv`.
 ## CI workflows
 
 - One concern per file under `.github/workflows/`: `ci.yml` (lint, type, test on push/PR —
-  `python-standards/templates/ci.yml`), `release.yml` (on `v*` tags; `git-workflow` makes the
-  tag the production trigger), scheduled jobs in their own file.
+  `python-standards/templates/ci.yml`), `release.yml` (on `release: published` —
+  `python-standards/templates/release.yml`; `git-workflow` makes the GitHub Release the version
+  and the production trigger), scheduled jobs in their own file.
 - A CI step runs **the same command the developer runs** (`uv run ruff check .`), never a
   CI-only variant. If it passes locally it passes in CI, and vice versa.

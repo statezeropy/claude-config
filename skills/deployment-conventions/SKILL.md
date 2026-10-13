@@ -2,7 +2,7 @@
 name: deployment-conventions
 description: How a service is packaged and run — what an app promises whatever sits in front of it (plain HTTP on PORT, proxy headers, /health and /ready, graceful shutdown, no local state, JSON logs), compose rules (healthcheck and depends_on conditions, the one-shot migrate job, profiles, no auto-updaters), nginx TLS termination with provided certificates, offline image delivery for sites without internet, hosting several projects on one VM, and the quality bar for SaaS products (AWS Marketplace / FTR). Use when writing compose files, packaging a release, adding a service to the stack, or deciding what an app may assume about its environment.
 metadata:
-  reviewed: 2026-09-11
+  reviewed: 2026-10-13
 ---
 
 # Deployment conventions
@@ -44,9 +44,20 @@ Start from `templates/compose.yml`.
 - Optional stacks behind `profiles` (`llm`, `monitoring`, `debug`): `docker compose --profile llm up -d`.
 - Development uses `compose.override.yml` (auto-merged) with `develop.watch`; production
   directories never contain an override file.
-- **No auto-updaters** (watchtower). The git tag is the deploy (`git-workflow` §3); an
-  unreviewed image change is an incident.
+- **No auto-updaters** (watchtower). The GitHub Release is the deploy (`git-workflow` §3) —
+  `release.yml` builds the image from its tag; an unreviewed image change is an incident.
 - No `version:` key (Compose Specification). Named volumes carry an explicit `name:`.
+
+## Image version
+
+- The image is tagged with the release version and with the commit —
+  `ghcr.io/org/product:1.4.2` and `:sha-1a2b3c4` (`docker/metadata-action` in
+  `python-standards/templates/release.yml`) — and labelled `org.opencontainers.image.version`.
+  `TAG=1.4.2` in `.env` selects it in compose. There is no `latest` to deploy from.
+- The Dockerfile takes `ARG VERSION` and exports it as `SETUPTOOLS_SCM_PRETEND_VERSION` before
+  `uv sync`: the build context has no `.git`, and the package version comes from the release
+  tag (`python-standards` §5). **No default for `VERSION`** — a build that does not know its
+  version fails instead of shipping `0.0.0`.
 
 ## TLS and delivery when we do not own the network
 
