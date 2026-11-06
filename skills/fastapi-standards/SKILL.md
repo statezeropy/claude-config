@@ -1,8 +1,8 @@
 ---
 name: fastapi-standards
-description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Also the internals every project shares — settings and env names, dependency names, schema suffixes (Create/Update/Read), error response shape, router registration, auth path, request id. Library mechanics are read from the installed version; data-layer decisions live in data-conventions.
+description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Also the caller-facing text FastAPI publishes (OpenAPI descriptions, error detail) and the internals every project shares — settings and env names, dependency names, schema suffixes (Create/Update/Read), error response shape, router registration, auth path, request id. Library mechanics are read from the installed version; data-layer decisions live in data-conventions.
 metadata:
-  reviewed: 2026-09-10
+  reviewed: 2026-11-06
 ---
 
 # FastAPI API Conventions
@@ -91,6 +91,22 @@ session is already a data-mapper. Add one only when a service must swap the data
 | auth | `POST /api/v1/auth/token`; `Authorization: Bearer <jwt>`; claims `sub`, `exp`, `scopes` (plus `tid` when multi-tenant). Password hashing via `pwdlib[bcrypt]` |
 | request id | middleware echoes `X-Request-ID` if present, else mints a uuid4; every log line carries it; JSON logs when `ENV=prod` |
 
+## 5. Caller-facing text
+
+FastAPI publishes some strings to whoever calls the API. Their reader is the caller, not the next
+developer, so `CLAUDE.md`'s comment rules do not decide their content; this section does.
+
+- Published: decorator `summary` / `description`, the route function's docstring (its first line
+  becomes the summary when none is given; FastAPI cuts the description at `\f`), `Field(description=)`,
+  response and request model docstrings, `FastAPI(description=)`, and error `detail` strings.
+- Write what the endpoint does, what goes in and comes out, and what each status code means.
+  One line is the default.
+- Never write design rationale, internal structure, a partner's circumstances, history, or a
+  `docs/design/` path — the caller cannot see the repository. Rationale lives in `docs/design/`.
+- Operational endpoints (`/health`, `/ready`) state what the response means in one line, or set
+  `include_in_schema=False`. Probe policy belongs in `deployment-conventions` or `docs/design/`.
+- Module docstrings and `#` comments in `app/api/` are not published; they follow `CLAUDE.md`.
+
 ## Review checklist
 
 - [ ] Path starts with `/api/v1`, prefix set at router include (not repeated per route);
@@ -100,3 +116,5 @@ session is already a data-mapper. Add one only when a service must swap the data
 - [ ] `response_model` set; separate input/output models; no client-settable server fields.
 - [ ] Route body has no business logic and no global state.
 - [ ] Dependency, schema and env names match §4 — nothing project-specific invented.
+- [ ] Every published string (§5) is written for the caller: behavior, inputs, outputs, status
+      codes — no rationale or history.

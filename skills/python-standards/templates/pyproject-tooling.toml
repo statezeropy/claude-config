@@ -75,6 +75,7 @@ mypy-init-return = true
 "**/cli.py" = ["T20"]                    # CLI 의 사용자 출력은 print 가 정상
 "scripts/**" = ["T20", "D", "ANN"]
 "alembic/versions/**" = ["D", "ANN", "N999"]
+"app/api/**" = ["D103"]                  # 라우트 docstring 은 OpenAPI 로 나간다 — 쓸 말이 있을 때만
 
 [tool.ruff.format]
 docstring-code-format = true
