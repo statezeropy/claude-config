@@ -10,7 +10,10 @@ Claude Code / Codex CLI global settings and skills.
 cd ~/.claude
 git clone https://github.com/statezeropy/claude-config.git
 ln -sf claude-config/CLAUDE.md CLAUDE.md
-ln -sf claude-config/skills skills
+# 이미 디렉터리가 있으면 ln 이 그 안에 링크를 만든다 — 먼저 치운다. synced/ 는 Claude Code 가 다시 받는다
+[ -d skills ] && [ ! -L skills ] && mv skills skills.old-$(date +%y%m%d)
+ln -sfn claude-config/skills skills
+ls skills/docs-structure/SKILL.md   # 보이면 연결된 것
 
 # 공유 설정(outputStyle 등)을 전역 settings.json 에 병합 — 기존 키는 보존된다 (jq 필요)
 # 링크가 아니라 병합인 이유: settings.json 은 Claude Code 가 직접 쓰는 파일이다(권한 응답, 머신별 경로).
@@ -25,8 +28,9 @@ jq -s '.[0] * .[1]' settings.json claude-config/settings.json > settings.json.tm
 ```bash
 cd ~/.codex
 git clone https://github.com/statezeropy/claude-config.git
-ln -sf claude-config/CLAUDE.md CODEX.md
-ln -sf claude-config/skills skills
+ln -sf claude-config/CLAUDE.md AGENTS.md
+# skills/.system 은 Codex 가 관리한다 — 디렉터리째 바꾸지 않고 skill 마다 링크한다
+for d in claude-config/skills/*/; do ln -sfn "$PWD/$d" skills/; done
 ```
 
 ## Plugins (Claude only)

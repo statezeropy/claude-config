@@ -3,7 +3,7 @@ name: docs-structure
 description: Organize a project's docs/ directory the way Google does — the five document types (reference, conceptual, how-to/tutorial, design doc, landing page) mapped onto a two-level docs/ tree, what belongs in the code instead of docs/, where planned-but-unimplemented work goes, per-page structure with freshness metadata, the root README (what it holds, what it links to, what never goes in it), and safe restructuring with link verification. Use when creating docs/, restructuring a flat pile of markdown, deciding where a new document belongs, moving or renaming docs, or reviewing documentation for structure and staleness.
 allowed-tools: Read, Grep, Glob, Bash, Write, Edit
 metadata:
-  reviewed: 2026-10-12
+  reviewed: 2026-11-06
 ---
 
 # Documentation structure
@@ -48,6 +48,7 @@ the signal to split it.
 | Reader arrives asking | Type | Lives in | Optimizes for |
 |---|---|---|---|
 | "How do I call this function?" | reference | **the code** — docstring, 헤더 주석 | completeness |
+| "How do I call this endpoint?" | reference | **the code** — OpenAPI text (`fastapi-standards` §5) | completeness |
 | "What is the exact field / flag / error code?" | reference (코드에 못 담는 것) | `reference/` | completeness |
 | "What is this and how does it fit together?" | conceptual | `concepts/` | clarity |
 | "How do I accomplish X?" | how-to / tutorial | `how-to/` | 한 번에 성공하는 하나의 경로 |
@@ -59,7 +60,7 @@ Two rules carry most of the weight:
 - **Reference documentation belongs in the code.** Signatures, parameters, raised exceptions,
   field meanings go in the docstring or header next to the thing they describe — that is the only
   copy that a reader trusts and a reviewer notices. `docs/reference/` is for contracts with no
-  home in code: the HTTP surface, config keys, event names, error-code tables.
+  home in code: integration flows across endpoints, config keys, event names, error-code tables.
 - **You get two of completeness, accuracy, clarity — rarely all three.** Name the one this page
   is for and let the others go. A concept page may simplify to stay readable; a reference page may
   not. Trying for all three is how a 400-line page nobody reads gets written.
@@ -154,7 +155,8 @@ then include only links to other pages."* It holds
 - the rule for where a new document goes.
 
 It holds no content of its own, and it does not serve two audiences at once — split the operator
-page from the contributor page rather than sectioning one page. The repository root `README.md`
+page from the contributor page rather than sectioning one page. A page for callers and partners
+carries no design rationale; link nothing under `design/` from it. The repository root `README.md`
 stays the entry point: purpose, status, quick start, links into `docs/`.
 
 ## Root README
@@ -263,7 +265,9 @@ Moving docs breaks links silently. In this order:
 ## Review checklist
 
 - [ ] Each page answers one reader question; no page mixes procedure and reference.
-- [ ] Reference material that could live in a docstring is not duplicated under `docs/`.
+- [ ] Reference material that could live in a docstring or the OpenAPI text is not duplicated
+      under `docs/`.
+- [ ] Caller-facing pages carry no design rationale.
 - [ ] Buckets are two levels deep unless a third earned its keep (>7 files, known boundary).
 - [ ] Page opens with H1 + freshness header + a summary naming its audience; how-to pages list
       prerequisites.

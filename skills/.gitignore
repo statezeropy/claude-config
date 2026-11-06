@@ -1,3 +1,6 @@
+# Claude Code 가 받아 두는 anthropic-skills
+synced/
+
 # Skills managed by the external `.agents` toolchain (npx skills add).
 # These live as junctions/symlinks into ~/.agents/skills and must not be committed.
 asta-skill/

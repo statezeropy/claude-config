@@ -2,7 +2,7 @@
 name: llm-app-conventions
 description: Version-independent decisions for LLM applications built with LangChain/LangGraph — where prompts live (Langfuse prompt management first, app/prompts/ otherwise), the language of model-facing text (Korean while building, English once Implemented), Pydantic models as the only output boundary, model configuration through settings and one factory, tracing with fixed run names and tags, and when a flow is a LangGraph graph versus an LCEL pipe. Use when adding a prompt, chain, graph, LLM call, retriever, or tracing to an application.
 metadata:
-  reviewed: 2026-10-12
+  reviewed: 2026-11-06
 ---
 
 # LLM application conventions
@@ -36,9 +36,9 @@ The comment rules in `CLAUDE.md` do not apply to them; these do.
   in English, so that is the version whose behavior is best predicted in production.
 - The switch is a prompt change, therefore a judgment surface: walk the QA sheet before its PR
   merges (§Tests) and version it in Langfuse like any other edit.
-- Keep the two audiences apart in code: a docstring the framework ships to the model is
-  model-facing and follows this section; the comment above it is for the next developer and
-  follows `CLAUDE.md`.
+- Keep the audiences apart in code — next developer (`CLAUDE.md`), caller
+  (`fastapi-standards` §5), model (this section). A docstring the framework ships to the model
+  follows this section; the comment above it follows `CLAUDE.md`.
 
 ## Boundaries
 
