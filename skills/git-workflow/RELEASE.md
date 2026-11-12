@@ -14,7 +14,7 @@ its **impact**, so a teammate, an operator, or an API consumer reads "what this 
 - **On every merge:** add an entry under `## [Unreleased]`.
 - **On release:** move `[Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` and add the compare link at
   the bottom. Nothing else changes — the version is the GitHub Release's tag, not a field in a
-  file (SKILL.md §3).
+  file (SKILL.md, Release).
 
 ## Release body — cut from the section, never retyped
 

@@ -1,6 +1,6 @@
 # Max's Global Development Standards
 
-이 문서와 전역 skill은 모든 프로젝트의 기본값이다. 프로젝트 `CLAUDE.md`가 같은 항목을 달리 정하면 프로젝트를 따른다.
+이 문서와 전역 rules·skill은 모든 프로젝트의 기본값이다. 프로젝트 `CLAUDE.md`가 같은 항목을 달리 정하면 프로젝트를 따른다.
 
 ## 언어
 
@@ -9,8 +9,8 @@
 - 영어로 표현되는 것은 영어 그대로 둔다 — 식별자, 코드, 고정 절 이름(`Context and Scope`), 외부 규격 용어.
   번역하지 않는다.
 - 호출자에게 나가는 글(OpenAPI 설명·오류 메시지)은 프로젝트 연동 명세의 언어를 따른다.
-- 모델에 전달되는 문자열(프롬프트·도구 설명)은 `llm-app-conventions`가 정한다. `claude-config`에서 직접 쓰는
-  skill 본문은 LLM이 읽는 지시문이라 영어로 쓴다 — 산출물 문서가 아니다.
+- 모델에 전달되는 문자열(프롬프트·도구 설명)은 `rules/llm-app.md`가 정한다. `claude-config`의
+  rules·skill 본문은 LLM이 읽는 지시문이라 영어로 쓴다 — 산출물 문서가 아니다.
 
 ## 용어
 
@@ -40,29 +40,24 @@
 - **테스트가 증거다.** "되는 것 같다"가 아니라 테스트 통과가 완료 기준이다.
   E2E로 실제 사용자 시나리오를 검증하고 DB에 데이터가 저장되는지까지 확인한다.
 - **설계가 먼저다.** 구조·계약·데이터 모델을 바꾸는 일은 설계 문서(`docs/design/`)가 구현의 근거다.
-  코드부터 짜지 않는다. 설계 문서가 필요한 일인지는 `design-doc` skill이 가른다.
+  코드부터 짜지 않는다. 대안이 둘 이상이고 되돌리기 비싼 결정일 때 쓴다 — 해법이 하나뿐인 수정에는
+  쓰지 않는다.
 - **문서는 코드와 같은 PR에서 바뀐다.** 기능 완료 후 `docs/`를 동기화한다 —
-  구조·수명 규칙은 `docs-structure` skill.
+  구조·수명 규칙은 `rules/docs.md`.
 
-## 표준 스택 — 괄호 안 skill이 그 항목 결정의 단일 출처
+## 표준 스택 — 규약은 `~/.claude/rules/`의 해당 파일이 단일 출처
 
-- **Python**: uv · ruff · mypy · pydantic (`python-standards` + `templates/`)
-- **API**: FastAPI (`fastapi-standards`)
-- **Data**: PostgreSQL · SQLite · SQLAlchemy · Alembic · Redis — 규약은 프로젝트의 기존 모델과
-  `docs/design/`을 따른다
-- **테스트·CI**: pytest + Playwright E2E, GitHub Actions (`service-conventions`)
-- **배포**: Docker Compose + nginx (`deployment-conventions`)
-- **Git·릴리즈**: Modified GitHub Flow, Conventional Commits, CHANGELOG (`git-workflow`)
-- **AI/LLM**: LangChain/LangGraph, Langfuse (`llm-app-conventions`)
-- **문서**: `docs/` 2-depth, 설계서 기반 (`docs-structure`, `design-doc`)
+해당 파일을 다룰 때 자동으로 실린다. 절차와 템플릿은 같은 주제의 skill에 있다.
 
-## Git·릴리즈
-
-- `CHANGELOG.md`가 릴리즈 노트의 단일 출처다. 항목은 커밋 제목 복붙이 아니라 **영향**으로 쓴다.
-- **버전은 파일에 쓰지 않는다.** GitHub Release의 태그 `vX.Y.Z`가 유일한 출처이고 빌드가 그것을 읽는다.
-  버전 부여는 사용자가 요청할 때만 — 요청받으면 agent가 `gh release create`로 대행한다.
-- 버전을 지정하지 않으면 **`Z`만 +1**. `X`·`Y`는 명시적으로 번호를 말할 때만 올린다 —
-  `feat:`·`BREAKING CHANGE:`로 추론하지 않는다. 절차·노트 형식·날짜 접미사(`_vYYMMDD`)는 `git-workflow` skill.
+- **Python**: uv · ruff · mypy · pydantic — `python.md` (도구 설정은 `python-standards` skill)
+- **API**: FastAPI — `fastapi.md`
+- **Data**: PostgreSQL · SQLite · SQLAlchemy · Alembic · Redis — 프로젝트의 기존 모델과 `docs/design/`
+- **테스트·CI**: pytest + Playwright E2E, GitHub Actions — `tests.md`
+- **배포**: Docker Compose + nginx — `deployment.md` (`deployment-conventions` skill)
+- **Git·릴리즈**: Modified GitHub Flow, Conventional Commits, CHANGELOG, 버전은 GitHub Release 태그 —
+  `git.md` (항상 실림, 릴리즈 절차는 `git-workflow` skill)
+- **AI/LLM**: LangChain/LangGraph — `llm-app.md`
+- **문서**: `docs/` 2-depth, 설계서 기반 — `docs.md`, `design-docs.md` (`docs-structure`, `design-doc` skill)
 
 ## 코드 품질
 
@@ -80,8 +75,8 @@
 - **독자는 그 글이 어디로 나가는지로 정한다.**
   - 다음 개발자 — `#` 주석, 내부·모듈·테스트 docstring. 이 절의 규칙을 따른다. 지금 대화의
     검토자가 아니고, 이 작업을 모른다.
-  - 호출자(API 쓰는 사람) — OpenAPI·응답·오류 메시지로 나가는 글. `fastapi-standards`가 정한다.
-  - 모델 — 프롬프트, 도구 설명, 도구 스키마가 되는 docstring. `llm-app-conventions`가 정한다.
+  - 호출자(API 쓰는 사람) — OpenAPI·응답·오류 메시지로 나가는 글. `rules/fastapi.md`가 정한다.
+  - 모델 — 프롬프트, 도구 설명, 도구 스키마가 되는 docstring. `rules/llm-app.md`가 정한다.
 - 코드가 말하지 못하는 것만 쓴다 — **이유**(왜 이 방법인지, 왜 더 단순한 방법이 아닌지)와
   **제약**(단위, 경계의 포함/제외, `None`의 뜻, 호출 순서, "여기 바꾸면 저기도").
   지웠을 때 다음 사람이 잘못 고칠 수 있는 줄만 남긴다.
