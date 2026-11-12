@@ -253,8 +253,8 @@ Moving docs breaks links silently. In this order:
 5. **Verify**:
 
    ```bash
-   scripts/check_links.py .          # 레포 전체, 깨진 링크 있으면 exit 1 → CI 게이트로 사용
-   scripts/check_links.py docs README.md
+   python3 <skill>/scripts/check_links.py .          # 레포 전체, 깨진 링크 있으면 exit 1 → CI 게이트로 사용
+   python3 <skill>/scripts/check_links.py docs README.md
    ```
 
    It resolves every relative markdown link and reports the ones that do not exist. For

@@ -3,16 +3,10 @@ name: git-workflow
 description: Enforce Modified GitHub Flow and Conventional Commits without Jira integration, and the release rule — the version is the GitHub Release tag, never a field in a file, created only on the user's request; date suffix _vYYMMDD for deliverables that cannot carry a release. Use when creating branches, committing changes, creating Pull Requests, or when the user asks for a release or a version.
 allowed-tools: Bash
 metadata:
-  reviewed: 2026-10-13
+  reviewed: 2026-11-12
 ---
 
 # Git Workflow Guidelines
-
-## When to use
-- **Branch Creation:** When starting new features, bug fixes, or any development work.
-- **Committing Changes:** When saving work with proper commit message format.
-- **Pull Request Creation:** When submitting code for review.
-- **Release Management:** When tagging versions for production deployment.
 
 ## Instructions
 
@@ -42,6 +36,8 @@ metadata:
      - `build`: Changes to the build system or dependencies (uv, pyproject)
      - `ci`: Changes to CI configuration and workflows
      - `chore`: Anything else that touches no source (tooling, housekeeping)
+   - The description is written in the project's commit language (`CLAUDE.md` 언어 — Korean by
+     default); type and scope stay English.
    - **Example:** `feat(auth): implement jwt token validation`
    - **Example (No scope):** `fix: resolve database connection timeout`
    - Push to remote: `git push origin <branch-name>`
@@ -123,13 +119,3 @@ Before finishing, verify:
 - [ ] Stopped at PR creation, unless the project's `CLAUDE.md` assigns the merge to the AI and
       the user asked for it.
 - [ ] No version field edited, no tag pushed; a release exists only because the user asked.
-
-## Examples
-
-### Branch Naming
-- `feat/user-login`
-- `fix/api-timeout`
-
-### Commit Message
-- `feat(auth): add login endpoint`
-- `fix: resolve null pointer exception`
