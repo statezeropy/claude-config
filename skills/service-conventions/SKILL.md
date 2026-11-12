@@ -1,6 +1,6 @@
 ---
 name: service-conventions
-description: Cross-cutting house rules for a Python service that cannot be inferred from a library — test directory layout, marker and fixture names, test database naming, the oracle rule that decides what is a pytest test versus a row in tests/qa/qasheet.csv (human- or AI-judged QA), asyncio rules (no asyncio.run in libraries, timeouts on every external call, TaskGroup over bare create_task), and the CI workflow file split. Use when laying out or adding tests, writing async code, or adding a CI workflow, and when deciding whether a check belongs in pytest or in the QA sheet. Data-layer decisions are in data-conventions, API shape in fastapi-standards, LLM apps in llm-app-conventions.
+description: Cross-cutting house rules for a Python service that cannot be inferred from a library — test directory layout, marker and fixture names, test database naming, the oracle rule that decides what is a pytest test versus a row in tests/qa/qasheet.csv (human- or AI-judged QA), asyncio rules (no asyncio.run in libraries, timeouts on every external call, TaskGroup over bare create_task), and the CI workflow file split. Use when laying out or adding tests, writing async code, or adding a CI workflow, and when deciding whether a check belongs in pytest or in the QA sheet. API shape is in fastapi-standards, LLM apps in llm-app-conventions.
 metadata:
   reviewed: 2026-10-13
 ---
@@ -9,9 +9,9 @@ metadata:
 
 Decisions, not knowledge: each has several defensible answers, and this is the one every
 project uses. Library mechanics are not here — read the installed version
-(`python-standards` §2). Sibling decision skills: `data-conventions` (PostgreSQL, SQLite,
-SQLAlchemy, Alembic, Redis), `fastapi-standards` (API surface and internals),
-`llm-app-conventions`.
+(`python-standards` §2). Sibling decision skills: `fastapi-standards` (API surface and
+internals), `llm-app-conventions`. Data-layer conventions follow the project's existing models
+and its `docs/design/`.
 
 ## Tests
 

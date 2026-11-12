@@ -1,6 +1,6 @@
 ---
 name: fastapi-standards
-description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Also the caller-facing text FastAPI publishes (OpenAPI descriptions, error detail) and the internals every project shares — settings and env names, dependency names, schema suffixes (Create/Update/Read), error response shape, router registration, auth path, request id. Library mechanics are read from the installed version; data-layer decisions live in data-conventions.
+description: API surface conventions for FastAPI — the /api/v1 prefix rule, resource URL shape (plural nouns, kebab-case, hierarchy, query params for filtering), status codes, Pydantic request/response models, and router/service/schema layout. Use when adding or renaming endpoints, designing an API's URL surface, or reviewing endpoints for RESTful compliance. Also the caller-facing text FastAPI publishes (OpenAPI descriptions, error detail) and the internals every project shares — settings and env names, dependency names, schema suffixes (Create/Update/Read), error response shape, router registration, auth path, request id. Library mechanics are read from the installed version.
 metadata:
   reviewed: 2026-11-06
 ---
@@ -11,8 +11,8 @@ This skill covers **the shape of the API surface** only — the part a client se
 changed later without breaking someone. Implementation mechanics (OAuth2/JWT, session handling,
 exception handlers, `AsyncClient` tests) are deliberately not pinned here: they move with library
 versions, so read the installed one — `.venv/lib/python*/site-packages/<pkg>` and its docs via
-MCP (`python-standards` §2). Column types, migrations and Redis keys are in `data-conventions`;
-test layout in `service-conventions`.
+MCP (`python-standards` §2). Column types, migrations and Redis keys follow the project's
+existing models and its `docs/design/`; test layout is in `service-conventions`.
 
 ## 1. URL surface
 
@@ -81,7 +81,7 @@ session is already a data-mapper. Add one only when a service must swap the data
 | Thing | Where and what it is called |
 |---|---|
 | settings | `app/core/config.py` — `class Settings(BaseSettings)`, `get_settings()` with `@lru_cache`, injected by `Depends(get_settings)`. Env names are fixed: `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`, `ENV` (`dev` / `test` / `prod`), `LOG_LEVEL`, `PORT`, `LLM_BASE_URL` |
-| tenancy | multi-tenant products only: `get_tenant` in `deps.py` is the **only** reader of the tenant id (the JWT `tid` claim). Never from a body, query or header the client controls (`data-conventions` §Tenancy) |
+| tenancy | multi-tenant products only: `get_tenant` in `deps.py` is the **only** reader of the tenant id (the JWT `tid` claim). Never from a body, query or header the client controls |
 | environment | plain HTTP on `PORT`, proxy headers trusted only from the proxy, `/health` + `/ready`, graceful SIGTERM, no local state, JSON logs to stdout (`deployment-conventions`) |
 | dependencies | `app/api/deps.py` — `get_db`, `get_settings`, `get_current_user`, `get_current_active_user`, `require_role(...)`. Same names in every project |
 | schemas | `XCreate` (input), `XUpdate` (every field optional), `XRead` (output, `model_config = ConfigDict(from_attributes=True)`). Read models never expose password hashes or internal flags |
