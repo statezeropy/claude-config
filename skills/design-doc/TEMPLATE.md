@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Author** | <name> |
-| **Reviewers** | <name (role)>, <name (role)> |
+| **Reviewers** | <name (role)>, <name (role)> — or `없음` in a solo repository |
 | **Status** | Draft \| In Review \| Approved \| Implemented \| Superseded |
 | **Last Updated** | YYYY-MM-DD |
 
@@ -12,7 +12,7 @@
 ## Context and Scope
 
 <Background a reviewer needs to follow the rest. What exists today, what changed, why this is
-being decided now. Maximum 3 paragraphs. No new claims, no persuasion — those belong in
+being decided now. A few paragraphs. Objective facts only — claims and persuasion belong in
 Actual Design.>
 
 ## Goals and Non-Goals
@@ -25,7 +25,7 @@ Actual Design.>
 ### Non-Goals
 
 - <Something a reasonable reader would assume is in scope, and explicitly is not. Say why.>
-- <Minimum 2. Not "performance optimization" or "anything not listed above".>
+- <Not "performance optimization" or "anything not listed above".>
 
 ## Actual Design
 
@@ -39,7 +39,8 @@ non-obvious.>
 
 ### Interfaces and data
 
-<APIs, schemas, storage. Include only what constrains the decision; full specs go elsewhere.>
+<APIs, schemas, storage. Include only what constrains the decision, and link to the definition
+in code or `docs/reference/` instead of pasting it.>
 
 ### Constraints and budgets
 
@@ -81,7 +82,7 @@ and specific.>
 ### Deployment
 
 <Where this runs — hosted by us, installed at a customer site, or both — and whether several
-customers share one instance (then `data-conventions` §Tenancy applies). Anything that needs
+customers share one instance (then say how tenants are isolated). Anything that needs
 the internet and what happens without it. What an upgrade at a customer site requires.>
 
 ### Reliability
@@ -104,3 +105,8 @@ would be noticed.>
 ## Open questions
 
 - <Unresolved items that block approval, with an owner for each.>
+
+## Amendments
+
+<Empty until the design ships. After that: `YYYY-MM-DD — what changed and why`, or a link to
+the design doc that supersedes this one.>

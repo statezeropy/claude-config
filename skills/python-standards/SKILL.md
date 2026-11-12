@@ -1,86 +1,35 @@
 ---
 name: python-standards
-description: Python conventions a linter cannot enforce — uv dependency management, the package version read from the GitHub Release tag (hatch-vcs, never a version field), verifying types of external packages, exception and logging policy, secrets, input validation, and path handling. Formatting, naming, import order, docstring presence, print/bare-except bans and comment hygiene (TODO format, commented-out code, blanket noqa/type-ignore) are delegated to the ruff/mypy config in templates/. Use when writing, refactoring, or reviewing Python, and when setting up a new project's tooling.
+description: Set up a Python project's tooling from the house templates — ruff/mypy/pytest configuration, pre-commit with the commit-msg hook, CI and release workflows — and wire the package version to the GitHub Release tag with hatch-vcs. Use when starting a Python project, adding the linter or CI configuration to one that lacks it, or fixing how a project computes its version. The Python conventions themselves load from the python rule whenever a .py file is touched.
 metadata:
-  reviewed: 2026-10-13
+  reviewed: 2026-11-12
 ---
 
-# Python Standards
+# Python project tooling
 
-Formatting, naming, import order, docstring presence, bare `except`, `print()`, and comment
-hygiene — TODO format, commented-out code, `# noqa` / `# type: ignore` without a code — are
-**not enforced by this document — they are enforced by the linter.** Set that up once per project:
+The conventions — dependencies, types, exceptions, input handling, asyncio — are in the
+`python` rule (`~/.claude/rules/python.md`). This skill sets up the tooling that enforces the
+rest: formatting, naming, import order, docstring presence, bare `except`, `print()`, TODO
+format, commented-out code, `# noqa` / `# type: ignore` without a code.
+
+## Setup
 
 ```bash
-uv init --build-backend hatch              # [project] 생성 — hatchling 이 §5 의 버전 읽기를 맡는다
+uv init --build-backend hatch              # hatchling 이 아래 버전 읽기를 맡는다
 uv add --dev ruff mypy pre-commit pytest pytest-asyncio pytest-cov
 cat <skill>/templates/pyproject-tooling.toml >> pyproject.toml   # [tool.*] 만 이어붙인다
-# 그리고 §5 의 두 줄을 손으로 고친다: dynamic = ["version"], build-system 에 hatch-vcs
 cp <skill>/templates/.pre-commit-config.yaml .
 mkdir -p .github/workflows && cp <skill>/templates/ci.yml <skill>/templates/release.yml .github/workflows/
 uv run pre-commit install                  # 이후 커밋마다 자동 검사
 uv run ruff check . && uv run ruff format . && uv run mypy .
 ```
 
-`dependencies` 와 `[dependency-groups]` 는 `uv add` 가 쓰는 곳이므로 손으로 편집하지 않는다.
-템플릿이 도구 설정만 담은 이유가 그것이다.
+The template holds tool configuration only, because `dependencies` and `[dependency-groups]`
+are written by `uv add`.
 
-What follows is only what tooling cannot decide for you.
+## Version from the release tag
 
-## 1. Environment & dependencies (uv)
-
-- Add dependencies with `uv add <pkg>` (`--dev` for tooling). Never manage project dependencies
-  with `pip install`.
-- Run with `uv run python script.py`; run one-off tools with `uvx <tool>`.
-- `uv sync` to match the lockfile, `uv lock` to update it. **Commit `uv.lock`.**
-- *Exception:* inside a container image or a CI bootstrap where uv is absent, pip is correct.
-  Even there the versions come from the lockfile (`uv export`) — never from a hand-written range.
-
-## 2. Types
-
-- Public functions and methods are annotated. Modern syntax only: `list[str]`, `dict[str, int]`,
-  `str | None` — not `typing.List` or `Optional[...]`.
-- Avoid `Any`. When unavoidable, a comment says why the type cannot be narrowed.
-- **Never guess an external package's types — read them.** Check
-  `.venv/lib/python*/site-packages/<pkg>/` for a `py.typed` marker or `.pyi` stubs; if there are
-  none, read the source. A guessed signature is a bug that mypy cannot catch.
-
-## 3. Exceptions & logging
-
-- Catch specific exception types. If you cannot recover, do not catch — let it propagate.
-  Swallowing an exception to return a default erases the cause at the call site.
-- Having caught it, do exactly one of: recover, wrap and re-raise as a domain exception
-  (`raise OrderNotFound(...) from e`), or log it with `logger.exception()` at the top-level
-  boundary (request handler, task runner, `main`).
-- `logger = logging.getLogger(__name__)`. **No `print()` for logging** — user-facing CLI output
-  via `print`/`rich` is fine and expected.
-- Never log secrets, tokens, or personal data.
-
-## 4. Security
-
-- No hardcoded secrets. Use `pydantic-settings` with `.env` — `.env` is gitignored,
-  `.env.example` is committed.
-- Validate every external input (request bodies, query params, files, env vars) through a
-  Pydantic model before use.
-- SQL through the ORM or parameter binding. Never build queries with string formatting.
-- Subprocesses take a list of arguments, never `shell=True`.
-- Paths go through `pathlib`. Resolve externally supplied paths against an explicit anchor and
-  verify they do not escape it:
-
-  ```python
-  root = Path(__file__).resolve().parent      # 또는 설정에서 온 명시적 루트
-  target = (root / user_input).resolve()
-  if not target.is_relative_to(root):
-      raise ValueError(f"path escapes {root}: {user_input}")
-  ```
-
-  Do not open a CWD-relative path — it breaks the moment the process is started from elsewhere.
-
-## 5. Version — read from the release tag, never written to a file
-
-The version is the GitHub Release tag (`git-workflow` §3). `pyproject.toml` declares it
-dynamic and hatch-vcs computes it from git at build and sync time. Two hand edits after
-`uv init --build-backend hatch` — the only edits ever made outside `[tool.*]`:
+Two hand edits after `uv init --build-backend hatch` — the only edits made outside `[tool.*]`:
 
 ```toml
 [project]
@@ -93,17 +42,14 @@ build-backend = "hatchling.build"
 
 `[tool.hatch.version]` and `[tool.uv] cache-keys` come with the template. What follows from it:
 
-- `uv.lock` records no version for the project, so `uv sync --locked` passes across releases
-  and there is nothing to keep in step.
-- Between releases the version is `X.Y.(Z+1).devN+g<sha>`. Compare versions with
-  `packaging.version.Version`, never as strings.
+- `uv.lock` records no version for the project, so `uv sync --locked` passes across releases.
+- Between releases the version is `X.Y.(Z+1).devN+g<sha>`.
 - A build without `.git` — a Docker context, a rebuilt sdist — needs
-  `SETUPTOOLS_SCM_PRETEND_VERSION=<X.Y.Z>`; `release.yml` passes the tag as `--build-arg VERSION`
-  for exactly this. Without it the build fails, and it should: no `fallback-version` — an image
-  that reports `0.0.0` is worse than no image.
+  `SETUPTOOLS_SCM_PRETEND_VERSION=<X.Y.Z>`; `release.yml` passes the tag as
+  `--build-arg VERSION` for this. There is no `fallback-version`: an image that reports `0.0.0`
+  is worse than no image.
 - `uv version` refuses a dynamic version. There is nothing to bump.
-- One release per commit. With two release tags on one commit `git describe` picks one of them
-  and the version is ambiguous; the CHANGELOG PR in `git-workflow` §3.3 makes every release a new
-  commit, so this only happens by hand.
+- One release per commit. With two release tags on one commit `git describe` picks one and the
+  version is ambiguous.
 - uv's own backend `uv_build` rejects dynamic metadata (astral-sh/uv#14561); that is why the
   backend is hatchling.

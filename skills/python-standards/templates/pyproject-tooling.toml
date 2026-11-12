@@ -10,12 +10,12 @@
 #   cp .pre-commit-config.yaml . && uv run pre-commit install
 #
 # 손으로 편집할 곳은 아래와, 버전 때문에 [project]·[build-system] 에 손대는 두 줄뿐이다
-# (dynamic = ["version"], requires 에 hatch-vcs — SKILL §5). dependencies 를 직접 타이핑하면
+# (dynamic = ["version"], requires 에 hatch-vcs — python-standards skill, Version from the release tag). dependencies 를 직접 타이핑하면
 # uv.lock 과 어긋난다.
 # 도구 설정을 pyproject 밖에 두지 않는 이유: ruff·mypy·pytest 가 모두 pyproject 를 읽으므로
 # 설정 파일이 흩어지지 않는다.
 
-# ---------------------------------------------------------------- version (git-workflow §3)
+# ---------------------------------------------------------------- version (git rule)
 [tool.hatch.version]
 source = "vcs"              # GitHub Release 태그가 버전이다. [project] 에 dynamic = ["version"] 이 있어야 한다
 
@@ -99,7 +99,7 @@ ignore_missing_imports = true
 testpaths = ["tests"]
 asyncio_mode = "auto"
 addopts = "-q -ra --strict-markers --strict-config"
-# --strict-markers 이므로 여기 없는 마커는 에러다. 배치 규약은 service-conventions 참조.
+# --strict-markers 이므로 여기 없는 마커는 에러다. 배치 규약은 tests rule 참조.
 markers = [
   "unit: no I/O, no network — runs in seconds",
   "integration: needs the docker compose stack (DB, Redis)",

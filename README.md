@@ -13,6 +13,7 @@ ln -sf claude-config/CLAUDE.md CLAUDE.md
 # 이미 디렉터리가 있으면 ln 이 그 안에 링크를 만든다 — 먼저 치운다. synced/ 는 Claude Code 가 다시 받는다
 [ -d skills ] && [ ! -L skills ] && mv skills skills.old-$(date +%y%m%d)
 ln -sfn claude-config/skills skills
+ln -sfn claude-config/rules rules      # 경로별 규약 — 해당 파일을 다룰 때 자동으로 실린다
 ls skills/docs-structure/SKILL.md   # 보이면 연결된 것
 
 # 공유 설정(outputStyle 등)을 전역 settings.json 에 병합 — 기존 키는 보존된다 (jq 필요)
@@ -77,16 +78,28 @@ claude /plugin install korean-skills@korean-skills
 /plugin install drawio@365-skills
 ```
 
-## Skill 작성 원칙
+## 어디에 무엇을 두나
 
-이 저장소의 skill 은 **결정**(규약·구조·워크플로)을 담고, 라이브러리 **지식**은 담지 않는다.
+| 위치 | 담는 것 | 언제 실리나 |
+|---|---|---|
+| `CLAUDE.md` | 원칙 | 모든 세션 |
+| `rules/git.md` | Git·릴리즈 규약 | 모든 세션 (`paths` 없음) |
+| `rules/<주제>.md` | 주제별 규약 — **결정** | `paths` 에 맞는 파일을 읽거나 고칠 때 |
+| `skills/<이름>/` | 절차와 템플릿 — 프로젝트 초기 설정, 릴리즈, 설계 문서 작성·검토, 문서 이동 | 호출될 때 |
+
+프로젝트 `CLAUDE.md` 가 같은 항목을 달리 정하면 프로젝트가 우선한다. Codex 는 `rules/` 를 읽지 않는다.
+
+## 작성 원칙
+
+rules 와 skill 은 **결정**(규약·구조·워크플로)을 담고, 라이브러리 **지식**은 담지 않는다.
 
 - 지식은 버전과 함께 썩는다. 2026-09 정리 때 지식형 skill 10개(41k줄)에서 Pydantic v1·SQLAlchemy 1.x·
   deprecated LangChain API 가 발견됐고, 같은 기간 결정형 skill 은 한 줄도 무효가 되지 않았다.
-- skill 이 고정해도 되는 것은 **모양** — 이름·URL·디렉토리·커밋 형식·계약 위치. **메커니즘** — 어떤
+- 고정해도 되는 것은 **모양** — 이름·URL·디렉토리·커밋 형식·계약 위치. **메커니즘** — 어떤
   라이브러리·언제 캐시·동기/비동기 — 은 프로젝트의 `docs/design/` 에서 측정과 함께 결정한다.
-- 린터·포매터·훅으로 옮길 수 있는 규칙은 산문으로 두지 않는다 (`python-standards/templates/`).
+- 린터·포매터·훅으로 옮길 수 있는 규칙은 산문으로 두지 않는다 (`skills/python-standards/templates/`).
 - 빠르게 움직이는 라이브러리는 사실을 적지 말고 **확인하는 방법**을 적는다 (핀한 버전의 소스 읽기).
+- rules 는 매번 실리므로 짧게 둔다. 절차가 되면 skill 로 옮긴다.
 - 소유한 skill 에는 `metadata.reviewed` 날짜를 둔다. 오래된 것부터 다시 읽는다.
-- skill 본문은 **영어**로 쓴다 — 독자가 LLM 이다. 한국어는 예시·인용 라벨에만. CLAUDE.md 의
-  "문서는 기본 한국어" 는 프로젝트 산출물(`docs/`)에 대한 규칙이며 skill 에는 적용되지 않는다.
+- rules 와 skill 본문은 **영어**로 쓴다 — 독자가 LLM 이다. 한국어는 예시·인용 라벨에만. CLAUDE.md 의
+  "문서는 기본 한국어" 는 프로젝트 산출물(`docs/`)에 대한 규칙이다.

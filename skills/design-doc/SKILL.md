@@ -1,139 +1,65 @@
 ---
 name: design-doc
-description: Write or review a technical design doc (design doc, RFC, architecture proposal, ADR) using the Google design doc convention — Context and Scope, Goals and Non-Goals, Actual Design, Alternatives Considered, Cross-cutting concerns. Use before implementation starts, when a decision needs reviewer sign-off, or when critiquing an existing design doc. After approval, hands off to implementation scopes tracked in docs/todo/. Do NOT use for writing code or for UI/visual design.
+description: Write, update or review a technical design doc (design doc, RFC, architecture proposal, ADR) in the Google design doc convention, and decide whether a change needs one at all. Use before implementation starts on a change to structure, a contract or a data model, when a decision needs sign-off, when the design changed during implementation, or when critiquing an existing design doc. After approval, hands off to implementation scopes tracked in docs/todo/. Do NOT use for writing code or for UI/visual design.
 allowed-tools: Read, Grep, Glob, Write, Edit, AskUserQuestion
 metadata:
-  reviewed: 2026-10-12
+  reviewed: 2026-11-12
 ---
 
-# Design Doc (Google convention)
+# Design doc — writing, updating, reviewing
 
-A design doc is a **decision artifact**, not a specification and not a plan. It exists to get
-the right people to disagree with you *before* the code is written. If a section does not help
-a reviewer challenge or approve the decision, it does not belong in the document.
+What every design doc has to satisfy — the status lifecycle and what makes it reviewable — is
+in the `design-docs` rule (`~/.claude/rules/design-docs.md`). Read that file before drafting
+or reviewing; this skill is the procedure around it.
 
-Write the document in **Korean** — it is a project deliverable under `docs/`, read by people and
-agents alike (`CLAUDE.md` 언어). What is English stays English: identifiers, code, external
-terms, and the section headings, which are fixed (below) under their Google names — do not
-rename or translate them; the template and [REVIEW.md](REVIEW.md) refer to them by those names.
+## Is a design doc needed?
 
-## Mode selection
+Decide this first. The test is whether the design is ambiguous: are there real alternatives,
+and would a wrong choice be expensive to undo?
 
-Read the request before doing anything:
+- **Write one** when the change sets structure, a contract with a caller or partner, or a data
+  model, and at least two approaches are defensible.
+- **Write a mini design doc** — the same sections, each a few lines — when the decision is
+  real but small.
+- **Do not write one** when the solution is clear and the document would only say "this is how
+  it is implemented"; the code and its PR description carry that better. A bug fix, a rename, a
+  copy change or a single-file change does not get a design doc. Say that none is needed and
+  proceed.
 
-- **WRITE** — no existing document, or the user asks for a new design doc → follow *Writing workflow*.
-- **REVIEW** — an existing doc is supplied or referenced → follow [REVIEW.md](REVIEW.md).
-  Do not rewrite the document into the template. Critique it.
+When unsure which of the three applies, ask.
 
-When ambiguous, ask which one.
+## Mode
 
-## Writing workflow
+- **WRITE** — no existing document, or the user asks for a new one → *Writing*.
+- **UPDATE** — the design changed while it was being built, or a decision in an existing doc is
+  being reopened → the lifecycle in the `design-docs` rule says whether to edit, amend or
+  supersede.
+- **REVIEW** — an existing doc is supplied or referenced → [REVIEW.md](REVIEW.md). Critique it;
+  do not rewrite it into the template.
 
-### 1. Gather before drafting
+## Writing
 
-Never draft from the prompt alone. Read the code, existing docs, and prior design docs the
-decision touches. Identify:
-
-- what the reviewer already knows (goes in Context, briefly)
-- what is genuinely undecided (this is the document's real subject)
-- what is already fixed by constraints outside this decision (state it, do not re-litigate it)
-
-If the decision is already made and unchangeable, say so and stop. A design doc for a
-foregone conclusion wastes reviewer time.
-
-### 2. Draft against the template
-
-Use [TEMPLATE.md](TEMPLATE.md). Fill every section. Write to `docs/design/<title>.md`, creating
-the directory if needed. The file is the title in the lowercase-hyphen form the `docs-structure`
-skill sets for every page — so it names the decision, not the feature
-(`tenant-isolation-by-schema.md`, not `multi-tenancy.md` or `DESIGN_tenancy.md`). If the
-directory already follows another style, match it; do not start a second one.
-When the work lands, flip **Status** to `Implemented` and fold what is now true into
-`docs/concepts/` and `docs/reference/` — the design doc stays as the record of why
-(see the `docs-structure` skill).
-
-### 3. Self-check against the hard rules
-
-Run the hard rules below against your own draft before showing it. Fix violations silently;
-do not present a draft you know is non-compliant.
-
-### 4. Hand off — scopes, not a plan document
-
-Once the document reaches **Approved**, the design doc's job is done. What follows is not a
-third document; it is a list of **scopes** in `docs/todo/<feature>.md` (the work-stream file
-`docs-structure` defines — items deleted as they land, file deleted when empty).
-
-- A scope is a **vertical slice** that can be finished and merged on its own: it touches every
-  layer it needs (schema, service, endpoint, UI) and only the parts it needs. Never a layer
-  ("do the models", "do the endpoints").
-- **Scope 1 is the walking skeleton**: the thinnest end-to-end path that proves the design
-  works in a running system. Width comes after.
-- One scope = one PR. Its done-criterion follows the oracle rule (`service-conventions`
-  §Tests): a test when pass/fail can be computed, a QA-sheet row when it needs judgment. No
-  coverage percentages, no hour estimates.
-- Get the user's approval of the scope list before starting, and **redraw it after scope 1** —
-  the real structure of the work is discovered by walking it, not imagined up front.
-
-## Hard rules
-
-These are the parts that decay first. Enforce them.
-
-### Status header is mandatory
-
-Every document opens with Author / Reviewers / Status / Last Updated. Status is exactly one of
-`Draft`, `In Review`, `Approved`, `Superseded`. A document with no named reviewer is not a
-design doc — it is a memo. If the user has not named reviewers, ask.
-
-### Length is capped
-
-Default target is **1-3 pages**. Only a genuinely large, cross-team design earns 10-20 pages.
-Context and Scope is **3 paragraphs maximum**. If the draft exceeds the cap, do not shrink the
-font of the argument — split the document or cut scope, and say which you did.
-
-Length is a proxy for whether the decision is actually understood. A 12-page doc for a
-2-week change usually means the author has not found the real trade-off yet.
-
-### Context and Scope is background, not argument
-
-Context states what a reviewer unfamiliar with this corner of the system needs in order to
-follow the rest. It contains **no new claims and no persuasion**. Every assertion that supports
-the chosen design belongs in Actual Design, where it can be attacked.
-
-If you catch yourself writing "therefore we should" in Context, move it.
-
-### Non-Goals: minimum 2, and they must be plausible
-
-A Non-Goal is something a reasonable reader **would otherwise assume is in scope**. It exists
-to prevent a specific misunderstanding.
-
-- Good: "Migrating existing records written before v2 — they stay on the old path indefinitely."
-- Not a Non-Goal: "Performance optimization", "Full test coverage", "Anything not listed above."
-
-The second kind is laziness dressed as scoping. Reject it and write a real one.
-
-### Alternatives Considered: no strawmen
-
-Each alternative needs **both**:
-
-1. **Why it was attractive** — the honest case for it. If you cannot make the case, you did not
-   consider it.
-2. **What disqualified it** — a specific, checkable reason. "Performance would be worse" is not
-   a reason; "p99 would exceed the 200 ms budget because each read fans out to N shards" is.
-
-Minimum 2 alternatives. "Do nothing" counts and is often the strongest one. An alternative that
-is obviously worse in every dimension is a strawman — delete it and find a real contender.
-
-This section is the highest-value part of the document for reviewers. Write it before you write
-Actual Design if you are struggling; it usually reveals that the decision is not yet made.
-
-### Cross-cutting concerns are always addressed
-
-Cover **security, privacy, observability, and cost** in every document. For each, either state
-the impact or state explicitly that there is none and why. Silence reads as "not considered".
-
-If the system touches personal data, health records, EMR/HIS data, or clinical documents,
-privacy is not a checkbox — state what data is processed, where it is stored, how long it is
-retained, and what de-identification applies. Say so even when the answer is "none of the above".
+1. **Gather before drafting.** Draft from the code, the existing docs and prior design docs the
+   decision touches. Identify what the reader already knows (Context, briefly), what is
+   genuinely undecided (the document's subject), and what is fixed by constraints outside this
+   decision (state it, do not re-litigate it). Take the alternatives from how established
+   systems solved the same problem — a registry, a standard's resource model, a well-known
+   library — two or three of them. If the decision is already made and cannot change, say so
+   and stop.
+2. **Draft against [TEMPLATE.md](TEMPLATE.md)**, into `docs/design/<title>.md`, the file named
+   for the decision (`tenant-isolation-by-schema.md`, not `multi-tenancy.md`) in the style the
+   directory already uses. The template is a default: drop a subsection that has nothing to say
+   for this decision and say so in one line.
+3. **Check the draft** against the `design-docs` rule before showing it, and fix what fails.
+4. **Hand off as scopes, not a plan document.** Once Approved, list scopes in
+   `docs/todo/<feature>.md`:
+   - a scope is a vertical slice that can be finished and merged on its own, touching every
+     layer it needs and only the parts it needs — a layer ("do the models") is not a scope;
+   - scope 1 is the walking skeleton, the thinnest end-to-end path that proves the design in a
+     running system;
+   - one scope is one PR, with a done-criterion by the oracle rule (`tests` rule): a test when
+     pass/fail can be computed, a QA-sheet row when it needs judgment;
+   - get the user's approval of the list before starting, and redraw it after scope 1.
 
 ## Anti-patterns
 
@@ -142,5 +68,11 @@ retained, and what de-identification applies. Say so even when the answer is "no
 | Every section is long except Alternatives | Decision was made before the doc | Write Alternatives first |
 | Non-Goals are negations of Goals | No real scoping done | Ask what readers would wrongly assume |
 | Design section lists features | This is a spec, not a design | State trade-offs, not behaviour |
+| Schemas and endpoint tables pasted in full | Reference material in the wrong place | Link to the code or `docs/reference/` |
 | No numbers anywhere | Nothing is falsifiable | Add budgets, limits, volumes |
-| Reviewers field empty | Not a design doc | Ask who signs off |
+| Approved, but the code went another way | The doc stopped following the design | Update it, or supersede it |
+
+## Sources
+
+- [Malte Ubl, "Design Docs at Google"](https://www.industrialempathy.com/posts/design-docs-at-google/)
+- [Software Engineering at Google, ch. 10 "Documentation"](https://abseil.io/resources/swe-book/html/ch10.html)
