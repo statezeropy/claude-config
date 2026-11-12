@@ -1,6 +1,6 @@
 # Max's Global Development Standards
 
-이 문서는 모든 프로젝트의 기본값이다. 프로젝트 `CLAUDE.md`가 같은 항목을 달리 정하면 프로젝트를 따른다.
+이 문서와 전역 skill은 모든 프로젝트의 기본값이다. 프로젝트 `CLAUDE.md`가 같은 항목을 달리 정하면 프로젝트를 따른다.
 
 ## 언어
 

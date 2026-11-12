@@ -87,7 +87,7 @@ own initiative — not a bump, not a tag, not a release.*
       user says otherwise.
    2. PR: move `[Unreleased]` in `CHANGELOG.md` to `## [X.Y.Z] - YYYY-MM-DD`
       ([RELEASE.md](RELEASE.md)). Nothing else changes — there is no version field to bump.
-      The user merges.
+      It is merged as §2.3 says.
    3. On the merged `main`, create the release. The user may do it in the GitHub UI; when the
       request covers it, the AI runs it with `gh`, the body cut from the CHANGELOG section
       (command in RELEASE.md):
