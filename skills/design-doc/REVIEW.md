@@ -15,7 +15,8 @@ that is the first finding — everything else is secondary.
 
 ### Alternatives Considered is real
 
-- Fewer than 2 alternatives → blocking.
+- No alternative at all → blocking: the document is an implementation manual, not a design doc.
+  One real contender ("do nothing" counts) is enough for a small decision.
 - An alternative with no honest case for it → strawman, blocking.
 - A disqualifying reason that is not checkable ("too slow", "doesn't scale", "too complex")
   → blocking. Ask for the number or the constraint.
@@ -24,7 +25,8 @@ that is the first finding — everything else is secondary.
 
 ### Non-Goals are real
 
-- Fewer than 2 → blocking.
+- None, where a reader of the title would plausibly assume something is in scope that is not →
+  blocking. Name the assumption. Do not ask for more Non-Goals to reach a count.
 - Non-Goals that are just negated Goals, or generic filler ("performance optimization",
   "anything not listed") → blocking. Ask what a reader would *wrongly assume* is in scope.
 
@@ -43,14 +45,23 @@ retention period. A design with no numbers cannot fail review, which means revie
 
 ### Status header
 
-Author, named Reviewers, Status, Last Updated all present. Empty Reviewers → blocking.
+Author, Reviewers, Status, Last Updated all present; Status is one of `Draft`, `In Review`,
+`Approved`, `Implemented`, `Superseded`. Empty Reviewers → blocking when the project has
+reviewers; in a solo repository `없음` is correct.
+
+### The document matches what is being built
+
+For an `Approved` document whose implementation has started: where the code went another way
+and the document was not updated → blocking. For an `Implemented` document, a later change of
+direction written into the body instead of the Amendments list or a superseding doc → blocking.
 
 ## Non-blocking checks
 
 - **Context contains argument.** Persuasion in Context should move to Actual Design.
 - **Length.** Over 3 pages for a non-cross-team decision usually signals the trade-off has not
   been found. Say which section is carrying the bloat.
-- **Spec creep.** Actual Design enumerating behaviour rather than stating trade-offs.
+- **Spec creep.** Actual Design enumerating behaviour rather than stating trade-offs, or
+  schemas and endpoint tables pasted in full where a link would do.
 - **Reversibility unstated.** Degree of freedom missing — reviewers cannot tell what is
   expensive to undo.
 - **Open questions with no owner.**
