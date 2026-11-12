@@ -182,7 +182,7 @@ they are already tracked:
 
 | Not in the README | Lives in |
 |---|---|
-| version, release date | git tags, `pyproject.toml`, `CHANGELOG.md` |
+| version, release date | the GitHub Release tag (`git-workflow` §3), `CHANGELOG.md` |
 | status, owner, contact | git history and the platform; a stale status line is worse than none |
 | individual document links | `docs/README.md` — the README names buckets, never files |
 | API reference | `docs/reference/` or the served OpenAPI page |

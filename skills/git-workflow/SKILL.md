@@ -17,7 +17,7 @@ metadata:
 ## Instructions
 
 ### 1. Core Rules
-- **Direct commits to `main` are PROHIBITED.**
+- Do not commit directly to `main`; work reaches it through a PR.
 - **`main` Branch:** Ready for Dev Server testing.
 - **GitHub Releases (`vX.Y.Z`):** the version and the production trigger. A release is created
   only when the user asks (§3).
@@ -46,13 +46,15 @@ metadata:
    - **Example (No scope):** `fix: resolve database connection timeout`
    - Push to remote: `git push origin <branch-name>`
 
-2.3. **Pull Request (STOP HERE):**
+2.3. **Pull Request — the AI's part ends here by default:**
    - Create a PR targeting `main`. The body is the project's `.github/pull_request_template.md`
      (copied from [templates/pull_request_template.md](templates/pull_request_template.md)) —
      it is the **definition of done** in one place: tests, QA sheet when a judgment surface
      changed, `CHANGELOG [Unreleased]`, docs in the same PR, design-doc Status, deploy notes.
      Every box is ticked or marked 해당 없음; an empty box means the PR stays open.
-   - **DO NOT MERGE.** Creating the PR ends the AI's part; the user reviews and merges.
+   - Do not merge by default: creating the PR ends the AI's part, and the user merges. A
+     project's `CLAUDE.md` may assign merging differently (for example, the AI runs the merge
+     when the user says to); where it does, follow the project's rule and its merge command.
    - Do not add reviewers — this is a solo repository unless the project says otherwise.
 
 2.4. **Enforce it with a hook, not with memory:** the `commit-msg` hook in
@@ -104,7 +106,7 @@ own initiative — not a bump, not a tag, not a release.*
    from a repository with releases still gets its CHANGELOG entry.
 
 ### 4. Emergency Hotfix Strategy
-*Use this ONLY when `main` is ahead of Production and a critical bug exists in Production.*
+*Use this only when `main` is ahead of Production and a critical bug exists in Production.*
 1. Branch from the production release: `git checkout -b hotfix/v1.0.1-<bug> v1.0.0`.
 2. Fix, commit (`fix:`), push the branch.
 3. On the user's request, release from the branch:
@@ -118,7 +120,8 @@ Before finishing, verify:
 - [ ] Branch name includes Type (e.g., feat/...).
 - [ ] Commit message follows `type(scope): desc` format.
 - [ ] PR created for merging to `main`.
-- [ ] **Stopped at PR creation** (waiting for the user to review and merge).
+- [ ] Stopped at PR creation, unless the project's `CLAUDE.md` assigns the merge to the AI and
+      the user asked for it.
 - [ ] No version field edited, no tag pushed; a release exists only because the user asked.
 
 ## Examples
