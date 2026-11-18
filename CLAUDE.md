@@ -58,6 +58,7 @@
   `git.md` (항상 실림, 릴리즈 절차는 `git-workflow` skill)
 - **AI/LLM**: LangChain/LangGraph — `llm-app.md`
 - **문서**: `docs/` 2-depth, 설계서 기반 — `docs.md`, `design-docs.md` (`docs-structure`, `design-doc` skill)
+- **글쓰기·윤문**: 모든 산문(응답·문서·커밋·주석)에 항상 실림 — `writing.md` (남의 글 윤문은 `humanize-korean` skill)
 
 ## 코드 품질
 
