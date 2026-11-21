@@ -25,8 +25,7 @@
 
 - 완료를 보고할 때는 첫 줄에 무엇을 어디서(브랜치·인스턴스·엔진) 돌려 확인했고 무엇은 돌리지
   못했는지 쓴다.
-- 다른 사람에게 나가는 글(메일·메신저·질문 목록)은 받는 사람이 답하거나 할 일부터 쓰고,
-  사용자가 전하려는 것만 담는다.
+- 다른 사람이 읽고 움직일 글(회의록·메일·메신저·요청·PR 본문)은 `decisions.md`를 따른다.
 
 ## 원칙
 
@@ -59,6 +58,7 @@
 - **AI/LLM**: LangChain/LangGraph — `llm-app.md`
 - **문서**: `docs/` 2-depth, 설계서 기반 — `docs.md`, `design-docs.md` (`docs-structure`, `design-doc` skill)
 - **글쓰기·윤문**: 모든 산문(응답·문서·커밋·주석)에 항상 실림 — `writing.md` (남의 글 윤문은 `humanize-korean` skill)
+- **결정 전달**: 다른 사람이 읽고 움직일 글에 항상 실림 — `decisions.md`
 
 ## 코드 품질
 
