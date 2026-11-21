@@ -74,7 +74,7 @@ AI(ChatGPT·Claude·Gemini 등)가 쓴 한글 텍스트를 사람이 쓴 글처�
 | 위치 | 담는 것 | 언제 실리나 |
 |---|---|---|
 | `CLAUDE.md` | 원칙 | 모든 세션 |
-| `rules/git.md` | Git·릴리즈 규약 | 모든 세션 (`paths` 없음) |
+| `rules/git.md` · `writing.md` · `decisions.md` | Git·릴리즈, 글쓰기, 결정 전달 규약 | 모든 세션 (`paths` 없음) |
 | `rules/<주제>.md` | 주제별 규약 — **결정** | `paths` 에 맞는 파일을 읽거나 고칠 때 |
 | `skills/<이름>/` | 절차와 템플릿 — 프로젝트 초기 설정, 릴리즈, 설계 문서 작성·검토, 문서 이동 | 호출될 때 |
 
